@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "id": "74e4",
+      "name": "naveen",
+      "email": "kingrapelli@gmail.com",
+      "password": "Naveen"
+    },
+    {
+      "id": "599f",
+      "name": "Raju",
+      "email": "raju@gmail.com",
+      "password": "raju"
+    }
+  ],
+  "notifications": [],
+  "products": [],
+  "restaurants": [],
+  "transport": [
+    {
+      "id": "4669",
+      "name": "Orange travels",
+      "type": "1001",
+      "location": "4001",
+      "createdBy": "74e4"
+    }
+  ],
+  "hotels": []
+}
