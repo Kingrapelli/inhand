@@ -41,7 +41,6 @@ function Feed(){
     const handleLike = async (item) => {
         item.likes.push(user.id);
         const index = item.dislikes.indexOf(user.id);
-        console.log("index in handlelike", index)
         // If the item exists in the array, remove it using splice
         if (index > -1) {
             item.dislikes.splice(index, 1); // 1 indicates the number of elements to remove
@@ -57,7 +56,6 @@ function Feed(){
     const handleDisLike = async (item) => {
         item.dislikes.push(user.id);
         const index = item.likes.indexOf(user.id);
-        console.log("index in handleDisLike", index)
         // If the item exists in the array, remove it using splice
         if (index > -1) {
             item.likes.splice(index, 1); // 1 indicates the number of elements to remove
@@ -105,52 +103,61 @@ function Feed(){
 
     return (
         <>
-            <div className='container'>
-                <div className='feedbox'>
-                <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
-                    {feed && feed.map((item) => (
-                        <Card sx={{ minWidth: '150px !important' ,minWidth: '300px !important',width: '400px' , margin:'5px' }}>
-                            <CardMedia
-                                component="img"
-                                height="200"
-                                image={item.imagepath}
-                                alt="Placeholder image"
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    {/* <img src={item.image} height={30} width={30}/>{item.postTitle}  */}
-                                    <span style={{float:'left'}}>
-                                        <img src={getUserDataByUserId(item.postedby).image} height={30} width={30} style={{borderRadius:'20px'}} /> 
-                                        <small style={{fontSize:'medium'}}> {getUserDataByUserId(item.postedby).name}</small>
-                                    </span>
-                                    <small style={{fontSize:'medium'}}>- {item.postTitle}</small>
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {item.description}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                { getUserIdFromLikes(item.likes) 
-                                    ?   <IconButton onClick={()=>handleRemoveLike(item)} >
-                                            <ThumbUpIcon style={{cursor:'pointer'}}/>
-                                        </IconButton>
-                                    :   <IconButton onClick={()=>handleLike(item)} >
-                                            <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
-                                        </IconButton> }{item.likes.length}
-                                {getUserIdFromLikes(item.dislikes) 
-                                    ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
-                                            <ThumbDownAltIcon style={{cursor:'pointer'}}/>
-                                        </IconButton> 
-                                    :   <IconButton onClick={()=> handleDisLike(item)} >
-                                            <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
-                                        </IconButton> }{item.dislikes.length}
-                                <Button style={{fontSize:'10px'}} size="small">Share</Button>
-                                <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
-                                <small style={{fontSize:'10px'}}>Posted on : {item.postedon}</small>
-                            </CardActions>
-                        </Card>
-                    ))}
-                    </Grid>
+            <div className='feedmaindiv'>
+                <div className='leftboardermenu' >
+                    {/* <ul>
+                        {Bookings && Bookings.map((item,index)=>{
+                            return <li key={item.value} onClick={handleRequest} value={item.value}>{item.name}</li>
+                        })}
+                    </ul> */}
+                </div>
+                <div className='container' style={{overflowY: "auto", height: '100% !important'}}>
+                    <div className='feedbox'>
+                    <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
+                        {feed && feed.map((item) => (
+                            <Card sx={{ minWidth: '150px !important' ,minWidth: '300px !important',width: '400px' , margin:'5px' }}>
+                                <CardMedia
+                                    component="img"
+                                    height="200"
+                                    image={item.imagepath}
+                                    alt="Placeholder image"
+                                />
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {/* <img src={item.image} height={30} width={30}/>{item.postTitle}  */}
+                                        <span style={{float:'left'}}>
+                                            <img src={getUserDataByUserId(item.postedby).image} height={30} width={30} style={{borderRadius:'20px'}} /> 
+                                            <small style={{fontSize:'medium'}}> {getUserDataByUserId(item.postedby).name}</small>
+                                        </span>
+                                        <small style={{fontSize:'medium'}}>- {item.postTitle}</small>
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {item.description}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    { getUserIdFromLikes(item.likes) 
+                                        ?   <IconButton onClick={()=>handleRemoveLike(item)} >
+                                                <ThumbUpIcon style={{cursor:'pointer'}}/>
+                                            </IconButton>
+                                        :   <IconButton onClick={()=>handleLike(item)} >
+                                                <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
+                                            </IconButton> }{item.likes.length}
+                                    {getUserIdFromLikes(item.dislikes) 
+                                        ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
+                                                <ThumbDownAltIcon style={{cursor:'pointer'}}/>
+                                            </IconButton> 
+                                        :   <IconButton onClick={()=> handleDisLike(item)} >
+                                                <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
+                                            </IconButton> }{item.dislikes.length}
+                                    <Button style={{fontSize:'10px'}} size="small">Share</Button>
+                                    <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
+                                    <small style={{fontSize:'10px'}}>Posted on : {item.postedon}</small>
+                                </CardActions>
+                            </Card>
+                        ))}
+                        </Grid>
+                    </div>
                 </div>
             </div>
         </>

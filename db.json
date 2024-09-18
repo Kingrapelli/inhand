@@ -62,9 +62,7 @@
       "postTitle": "About our freedom",
       "imagepath": "download1.jpg",
       "description": "we got our freedom in 1974 but still struggling to get freedom",
-      "likes": [
-        "74e4"
-      ],
+      "likes": [],
       "dislikes": []
     },
     {
@@ -94,7 +92,9 @@
       "postTitle": "Be unique",
       "imagepath": "download4.jpg",
       "description": "we got our freedom in 1974 but still struggling to be unique rather than being like others",
-      "likes": [],
+      "likes": [
+        "599f"
+      ],
       "dislikes": []
     }
   ]

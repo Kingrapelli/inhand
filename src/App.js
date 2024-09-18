@@ -61,6 +61,7 @@ function App() {
           <Route path='/shopping' element={token ? < ShoppingMain /> : <Navigate to="/login"/>} />
           <Route path='/settings' element={token ? < Settings /> : <Navigate to="/login"/>} />
         </Routes >
+        <></>
     </>
   );
 }

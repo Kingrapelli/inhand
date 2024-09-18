@@ -179,3 +179,8 @@ input,select {
   justify-content: center;
   padding: 20px;
 }
+
+.feedmaindiv {
+  height: 700px !important;
+  overflow: auto !important;
+}
