@@ -5,14 +5,14 @@
       "name": "Naveen Kumar Rapelli",
       "email": "kingrapelli@gmail.com",
       "password": "Naveen",
-      "image" : "Photo.jpg"
+      "image": "Photo.jpg"
     },
     {
       "id": "599f",
       "name": "Raju",
       "email": "raju@gmail.com",
       "password": "raju",
-      "image" : "monkey.jpg"
+      "image": "monkey.jpg"
     }
   ],
   "notifications": [],
@@ -84,9 +84,7 @@
       "postTitle": "Keep motivated",
       "imagepath": "download.jpg",
       "description": "we got our freedom in 1974 but still struggling to get motiviated",
-      "likes": [
-        
-      ],
+      "likes": [],
       "dislikes": []
     },
     {
@@ -96,9 +94,7 @@
       "postTitle": "Be unique",
       "imagepath": "download4.jpg",
       "description": "we got our freedom in 1974 but still struggling to be unique rather than being like others",
-      "likes": [
-        
-      ],
+      "likes": [],
       "dislikes": []
     }
   ]

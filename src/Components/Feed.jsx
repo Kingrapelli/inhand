@@ -40,21 +40,33 @@ function Feed(){
 
     const handleLike = async (item) => {
         item.likes.push(user.id);
+        const index = item.dislikes.indexOf(user.id);
+        console.log("index in handlelike", index)
+        // If the item exists in the array, remove it using splice
+        if (index > -1) {
+            item.dislikes.splice(index, 1); // 1 indicates the number of elements to remove
+        }
         await updateFeed(item);
     }
 
     const handleRemoveLike = async (item) => {
-        // console.log(item)
+        item.likes.splice(item.likes.indexOf(user.id), 1);
         await updateFeed(item);
     }
 
     const handleDisLike = async (item) => {
-        // console.log(item)
+        item.dislikes.push(user.id);
+        const index = item.likes.indexOf(user.id);
+        console.log("index in handleDisLike", index)
+        // If the item exists in the array, remove it using splice
+        if (index > -1) {
+            item.likes.splice(index, 1); // 1 indicates the number of elements to remove
+        }
         await updateFeed(item);
     }
 
     const handleRemoveDisLike = async (item) => {
-        // console.log(item)
+        item.dislikes.splice(item.dislikes.indexOf(user.id), 1);
         await updateFeed(item);
     }
 
@@ -126,10 +138,10 @@ function Feed(){
                                             <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
                                         </IconButton> }{item.likes.length}
                                 {getUserIdFromLikes(item.dislikes) 
-                                    ?   <IconButton onClick={()=> handleDisLike(item)} >
+                                    ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
                                             <ThumbDownAltIcon style={{cursor:'pointer'}}/>
                                         </IconButton> 
-                                    :   <IconButton onClick={()=> handleRemoveDisLike(item)} >
+                                    :   <IconButton onClick={()=> handleDisLike(item)} >
                                             <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
                                         </IconButton> }{item.dislikes.length}
                                 <Button style={{fontSize:'10px'}} size="small">Share</Button>
