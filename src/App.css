@@ -72,7 +72,6 @@
   margin: auto;
   margin-top: 50px;
   background-color: white;
-  /* background-color: #f2f2f2; */
   padding: 20px;
 }
 
@@ -128,7 +127,6 @@ input,select {
 
 .leftboardermenu{
   border: 1px solid white;
-  /* border-radius: 10px; */
   min-width: 160px;
   max-width: 250px;
   position: absolute;
@@ -139,7 +137,6 @@ input,select {
 }
 
 .leftboardermenu li{
-  /* display: inline; */
   font-size: 16px !important;
   font-weight: 500;
   padding: 12px;
@@ -157,4 +154,17 @@ input,select {
   box-sizing: border-box;
   float: right;
   height: 30px;
+}
+
+.feedbox {
+  border: 1px solid black;
+  width: 600px !important;
+  border-radius: 10px;
+  text-align: center;
+  justify-content: center !important;
+  margin: auto;
+  margin-top: 50px;
+  background-color: white;
+  justify-content: center;
+  padding: 20px;
 }
