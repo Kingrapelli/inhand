@@ -94,12 +94,12 @@ function BookingMain(){
                             })}
                         </select>
                     </form>
-                    {location.value}
-                    {locationName}
+                    {/* {location.value}
+                    {locationName} */}
 
                     <Grid container spacing={3} style={{overflowY:'auto'}}>
                     {transports && transports.map((item) => (
-                        <Card sx={{ maxWidth: 345 , margin:'5px'}}>
+                        <Card sx={{ maxWidth: 450 , width:350, minWidth:100, margin:'5px'}}>
                             <CardMedia
                                 component="img"
                                 height="140"

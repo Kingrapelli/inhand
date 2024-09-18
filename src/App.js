@@ -12,6 +12,7 @@ import BookingMain from './Components/Booking/BookingMain';
 import NewBooking from './Components/Booking/NewBooking';
 import FoodMain from './Components/Food/FoodMain';
 import ShoppingMain from './Components/Shopping/ShoppingMain';
+import Settings from './Components/Settings';
 // import { browserHistory, Router, Route  } from 'react-router';
 const { default: jwt_decode } = require("jwt-decode");
 
@@ -58,6 +59,7 @@ function App() {
           <Route path='/bookings/new' element={token ? < NewBooking /> : <Navigate to="/login"/>} />
           <Route path='/food' element={token ? < FoodMain /> : <Navigate to="/login"/>} />
           <Route path='/shopping' element={token ? < ShoppingMain /> : <Navigate to="/login"/>} />
+          <Route path='/settings' element={token ? < Settings /> : <Navigate to="/login"/>} />
         </Routes >
     </>
   );

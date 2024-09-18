@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ['Home','Bookings','Shopping','Food'];
-const settings = ['Profile', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Dashboard','Settings', 'Logout'];
 
 function Header(){
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -90,7 +90,7 @@ function Header(){
                                 <Box sx={{ flexGrow: 0 }} >
                                     <Tooltip title="Open settings">
                                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                            <Avatar alt="Remy Sharp" src="" /> 
+                                            <Avatar alt="Remy Sharp" src={user.image} /> 
                                             {/* /static/images/avatar/2.jpg */}
                                         </IconButton>
                                     </Tooltip>
@@ -110,6 +110,9 @@ function Header(){
                                         open={Boolean(anchorElUser)}
                                         onClose={handleCloseUserMenu}
                                     >
+                                        <MenuItem key={user.name} >
+                                            <Typography sx={{ textAlign: 'center' }}>{user.name}</Typography>
+                                        </MenuItem>
                                         {settings.map((setting) => (
                                             <MenuItem key={setting} 
                                                 to={

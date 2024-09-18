@@ -127,8 +127,9 @@ input,select {
 
 .leftboardermenu{
   border: 1px solid white;
-  min-width: 160px;
+  min-width: 100px;
   max-width: 250px;
+  width: 160px;
   position: absolute;
   left: 0;
   height: 100% !important;
@@ -142,6 +143,16 @@ input,select {
   padding: 12px;
   color: white;
   cursor: pointer;
+}
+
+#locationnew{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 5px !important;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 #location{

@@ -73,7 +73,7 @@ function NewBooking(){
                         required>
                     </input>
                     <label htmlFor="location" key={'location'} style={{float: 'left'}}>Location </label>
-                    <select id='location' name='location' onClick={handleChange}>
+                    <select id='locationnew' name='location' onClick={handleChange}>
                         <option value={''} onClick={handleChange}></option>
                         {Locations && Locations.map(item=>{
                             return <option key='item' value={item.value} onClick={handleChange}>{item.name}</option>

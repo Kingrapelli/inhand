@@ -2,15 +2,17 @@
   "users": [
     {
       "id": "74e4",
-      "name": "naveen",
+      "name": "Naveen Kumar Rapelli",
       "email": "kingrapelli@gmail.com",
-      "password": "Naveen"
+      "password": "Naveen",
+      "image" : "Photo.jpg"
     },
     {
       "id": "599f",
       "name": "Raju",
       "email": "raju@gmail.com",
-      "password": "raju"
+      "password": "raju",
+      "image" : "monkey.jpg"
     }
   ],
   "notifications": [],
@@ -51,43 +53,53 @@
     }
   ],
   "hotels": [],
-  "bookings" : [],
-  "feed" : [
+  "bookings": [],
+  "feed": [
     {
-      "postedby" : "74e4",
-      "postedon" : "14/08/2024 15:46PM",
-      "postTitle" : "About our freedom",
-      "imagepath" : "download1.jpg",
-      "description" : "we got our freedom in 1974 but still struggling to get freedom",
-      "likes" : [],
-      "dislikes" : []
+      "id": "1234",
+      "postedby": "74e4",
+      "postedon": "2023-07-25T23:00:00",
+      "postTitle": "About our freedom",
+      "imagepath": "download1.jpg",
+      "description": "we got our freedom in 1974 but still struggling to get freedom",
+      "likes": [
+        "74e4"
+      ],
+      "dislikes": []
     },
     {
-      "postedby" : "599f",
-      "postedon" : "24/07/2024 15:46PM",
-      "postTitle" : "Raise your voice",
-      "imagepath" : "download2.jpg",
-      "description" : "we got our freedom in 1974 but still struggling to use our voice",
-      "likes" : [],
-      "dislikes" : []
+      "id": "2345",
+      "postedby": "599f",
+      "postedon": "2023-08-15T11:00:00",
+      "postTitle": "Raise your voice",
+      "imagepath": "download2.jpg",
+      "description": "we got our freedom in 1974 but still struggling to use our voice",
+      "likes": [],
+      "dislikes": []
     },
     {
-      "postedby" : "74e4",
-      "postedon" : "11/08/2024 15:46PM",
-      "postTitle" : "Keep motivated",
-      "imagepath" : "download.jpg",
-      "description" : "we got our freedom in 1974 but still struggling to get motiviated",
-      "likes" : [],
-      "dislikes" : []
+      "id": "3456",
+      "postedby": "74e4",
+      "postedon": "2024-07-20T12:00:00",
+      "postTitle": "Keep motivated",
+      "imagepath": "download.jpg",
+      "description": "we got our freedom in 1974 but still struggling to get motiviated",
+      "likes": [
+        
+      ],
+      "dislikes": []
     },
     {
-      "postedby" : "599f",
-      "postedon" : "18/09/2024 15:46PM",
-      "postTitle" : "Be unique",
-      "imagepath" : "download4.jpg",
-      "description" : "we got our freedom in 1974 but still struggling to be unique rather than being like others",
-      "likes" : [],
-      "dislikes" : []
+      "id": "4567",
+      "postedby": "599f",
+      "postedon": "2024-01-05T05:00:00",
+      "postTitle": "Be unique",
+      "imagepath": "download4.jpg",
+      "description": "we got our freedom in 1974 but still struggling to be unique rather than being like others",
+      "likes": [
+        
+      ],
+      "dislikes": []
     }
   ]
 }
