@@ -7,8 +7,8 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(localStorage.getItem('token'))
-      navigate('/dashboard');
+    // if(localStorage.getItem('token'))
+    //   navigate('/home');
   })
 
   const handleSubmit = async () => {
@@ -22,7 +22,7 @@ function Login() {
       let token = Math.random().toString(36).slice(2);
       localStorage.setItem('token',token);
       localStorage.setItem('user',JSON.stringify(responce[0]));
-      navigate('/dashboard');
+      navigate('/home');
       console.log("logged in successfully");
     }
     else

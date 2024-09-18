@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Bookings from '../Enums/BookingEnum';
+import Locations from '../Enums/LocationEnum';
 // import Bookings from '../Enums/Booking'
 
 function NewBooking(){
@@ -9,6 +11,7 @@ function NewBooking(){
     const [booking, setBooking] = new useState({
         name : '',
         type : '',
+        description : '',
         location : '',
         createdBy : user.id
     });
@@ -32,7 +35,8 @@ function NewBooking(){
             },
             body: JSON.stringify(booking)
         }).then(()=>{
-            alert("New Booking got created")
+            alert("New Booking got created");
+            navigate('/bookings');
         }).catch((error)=>{
             alert("Error while saving New Booking entry")
         })
@@ -40,6 +44,7 @@ function NewBooking(){
 
     return (
         <>
+            <Link to="/bookings"><button type="button" className='backButton' >Back</button></Link>
             <div id='logindiv'>
                 Create New Booking
                 <form>
@@ -51,21 +56,28 @@ function NewBooking(){
                         onChange={handleChange}
                         required>
                     </input>
-                    <label htmlFor="typeofbooking" style={{float: 'left'}}>Type of Booking </label>
+                    <label htmlFor="typeofbooking" key={'typeofbooking'} style={{float: 'left'}}>Type of Booking </label>
                     <select id='typeofbooking' name='type' onClick={handleChange}>
                         <option value={''} onClick={handleChange}></option>
-                        <option value={1001} onClick={handleChange}>Bus</option>
-                        <option value={1002} onClick={handleChange}>Train</option>
-                        <option value={1003} onClick={handleChange}>Flight</option>
-                        <option value={1004} onClick={handleChange}>Cab</option>
+                        {Bookings && Bookings.map(item=>{
+                            return <option key={item.value} value={item.value} onClick={handleChange}>{item.name}</option>
+                        })}
                     </select>
-                    <label htmlFor="location" style={{float: 'left'}}>Location </label>
+                    <label htmlFor="description" key={'description'} style={{float: 'left'}}>Description </label>
+                    <input id='description'
+                        type='text'
+                        name='description'
+                        placeholder='Description'
+                        value={booking.description}
+                        onChange={handleChange}
+                        required>
+                    </input>
+                    <label htmlFor="location" key={'location'} style={{float: 'left'}}>Location </label>
                     <select id='location' name='location' onClick={handleChange}>
                         <option value={''} onClick={handleChange}></option>
-                        <option value={4001} onClick={handleChange}>Hyderabad</option>
-                        <option value={4002} onClick={handleChange}>Vizag</option>
-                        <option value={4003} onClick={handleChange}>Bangalore</option>
-                        <option value={4004} onClick={handleChange}>Chennai</option>
+                        {Locations && Locations.map(item=>{
+                            return <option key='item' value={item.value} onClick={handleChange}>{item.name}</option>
+                        })}
                     </select>
                     <button id='signin' type="button" onClick={handleSubmit}>Create</button>
                 </form>

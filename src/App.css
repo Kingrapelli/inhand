@@ -79,7 +79,7 @@
 input,select {
   width: 100%;
   padding: 12px 20px;
-  margin: 8px 0;
+  margin: 5px !important;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -91,7 +91,7 @@ input,select {
   background-color: #4CAF50;
   color: white;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 8px !important;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -99,4 +99,62 @@ input,select {
 
 #signin:hover{
   background-color: #45a049;
+}
+
+.createButton {
+  float: right;
+  width: 80px;
+  margin: 5px;
+  border-radius: 10px;
+  border-color: white;
+  background-color: rgb(84, 216, 84);
+  height: 30px;
+  color: black;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.backButton {
+  float: left;
+  width: 80px;
+  margin: 5px;
+  border-radius: 10px;
+  border-color: white;
+  height: 30px;
+  color: black;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.leftboardermenu{
+  border: 1px solid white;
+  /* border-radius: 10px; */
+  min-width: 160px;
+  max-width: 250px;
+  position: absolute;
+  left: 0;
+  height: 100% !important;
+  background-color: #1976d2;
+  display: flex;
+}
+
+.leftboardermenu li{
+  /* display: inline; */
+  font-size: 16px !important;
+  font-weight: 500;
+  padding: 12px;
+  color: white;
+  cursor: pointer;
+}
+
+#location{
+  width: 25%;
+  padding: 12px 20px;
+  margin: 5px !important;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  float: right;
+  height: 30px;
 }

@@ -4,7 +4,4 @@ const restaurantType = {
     dhaba : 2003,
 }
 
-const TypeofFood = {
-    veg : 3001,
-    nonveg : 3002
-}
+export default restaurantType;
