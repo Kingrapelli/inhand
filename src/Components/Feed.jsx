@@ -6,6 +6,7 @@ import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import axios from 'axios';
+import TypeOfFeed from './Enums/TypeOfFeed';
 
 function Feed(){
     const [allUsers, setAllUsers] = useState();
@@ -105,17 +106,17 @@ function Feed(){
         <>
             <div className='feedmaindiv'>
                 <div className='leftboardermenu' >
-                    {/* <ul>
-                        {Bookings && Bookings.map((item,index)=>{
-                            return <li key={item.value} onClick={handleRequest} value={item.value}>{item.name}</li>
+                    <ul>
+                        {TypeOfFeed && TypeOfFeed.map((item,index)=>{
+                            return <li key={item.value} value={item.value}>{item.name}</li>
                         })}
-                    </ul> */}
+                    </ul>
                 </div>
                 <div className='container' style={{overflowY: "auto", height: '100% !important'}}>
                     <div className='feedbox'>
                     <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
                         {feed && feed.map((item) => (
-                            <Card sx={{ minWidth: '150px !important' ,minWidth: '300px !important',width: '400px' , margin:'5px' }}>
+                            <Card sx={{ minWidth: '300px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px' }}>
                                 <CardMedia
                                     component="img"
                                     height="200"

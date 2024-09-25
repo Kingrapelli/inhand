@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function Signup(){
     const navigate = useNavigate();
     let image ;
+
     const [user, setUser] = useState({
         name : '',
         email : '',
@@ -15,7 +16,7 @@ function Signup(){
 
     const onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
-            image = URL.createObjectURL(event.target.files[0]);
+            image = event.target.files[0].name;
             console.log(image);
         }
     }
@@ -29,8 +30,7 @@ function Signup(){
         const {name, value} = e.target;
         setUser((prevuser)=>({
             ... prevuser,
-            [name]: value,
-            path: image
+            [name]: value
         }))
     }
 
@@ -48,7 +48,7 @@ function Signup(){
                 "Content-Type" : 'application/json'
             },
             body: JSON.stringify(user)
-        }).then(()=>{
+        }).then(async ()=>{
             alert("User got created")
             navigate('/login');
         }).catch(error=>{
@@ -105,7 +105,7 @@ function Signup(){
                         onChange={handleChane}
                         required>
                     </input>
-                    {/* <input type="file" name='path' onChange={onImageChange} className="filetype" required /> */}
+                    <input type="file" name='path' onChange={onImageChange} className="filetype" required />
                     <button id='signin' type='button' onClick={handleSubmit}>SignUp</button>
                     <p>Already have an account? <a onClick={NavigateToLogin} style={{cursor:'pointer'}}>Login</a></p>
                 </form>

@@ -3,5 +3,7 @@ const MasterEnum = {
     restauranttype : 2,
     typeoffood : 3,
     locations : 4,
-    sublocations : 5
+    sublocations : 5,
+    typeoffeed : 6,
+    
 }
