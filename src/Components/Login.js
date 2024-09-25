@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Message } from './Enums/ErrorMessages';
 
 function Login() {
   const [email,setEmail] = useState('');
@@ -23,10 +24,10 @@ function Login() {
       localStorage.setItem('token',token);
       localStorage.setItem('user',JSON.stringify(responce[0]));
       navigate('/home');
-      console.log("logged in successfully");
+      console.log(Message.Logged_In_SuccessFully);
     }
     else
-      console.log("error while logging in")
+      alert(Message.Error_While_Logging_IN);
   }
 
   const navigateToSignup = () => {
