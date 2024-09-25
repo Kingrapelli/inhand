@@ -23,7 +23,43 @@
       "path": ""
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "id": "d01d",
+      "actiontype": 8001,
+      "notificationtype": 7001,
+      "itemId": "3456",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-09-25T17:32:41.331Z"
+    },
+    {
+      "id": "598a",
+      "notificationtype": 7001,
+      "itemId": "3456",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-09-25T17:38:04.370Z"
+    },
+    {
+      "id": "a947",
+      "actiontype": 8002,
+      "notificationtype": 7001,
+      "itemId": "1234",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-09-25T17:45:29.968Z"
+    },
+    {
+      "id": "9d88",
+      "actiontype": 8001,
+      "notificationtype": 7001,
+      "itemId": "4567",
+      "owner": "599f",
+      "actionby": "74e4",
+      "updatedon": "2024-09-25T17:48:17.948Z"
+    }
+  ],
   "products": [],
   "restaurants": [],
   "transport": [
@@ -71,7 +107,9 @@
       "imagepath": "download1.jpg",
       "description": "we got our freedom in 1947 but still struggling to get freedom",
       "likes": [],
-      "dislikes": []
+      "dislikes": [
+        "74e4"
+      ]
     },
     {
       "id": "2345",
@@ -90,7 +128,9 @@
       "postTitle": "Keep motivated",
       "imagepath": "download.jpg",
       "description": "we got our freedom in 1947 but still struggling to get motiviated",
-      "likes": [],
+      "likes": [
+        "74e4"
+      ],
       "dislikes": []
     },
     {
@@ -101,7 +141,8 @@
       "imagepath": "download4.jpg",
       "description": "we got our freedom in 1947 but still struggling to be unique rather than being like others",
       "likes": [
-        "599f"
+        "599f",
+        "74e4"
       ],
       "dislikes": []
     }

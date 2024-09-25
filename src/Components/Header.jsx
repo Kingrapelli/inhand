@@ -22,6 +22,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { styled, alpha } from '@mui/material/styles';
+import moment from 'moment';
+import { ActionType } from './Enums/ActionType';
 
 const pages = ['Home','Bookings','Shopping','Food'];
 const settings = ['Profile', 'Dashboard','Settings', 'Logout'];
@@ -42,7 +44,7 @@ const Search = styled('div')(({ theme }) => ({
       width: 'auto',
     },
 }));
-  
+
 const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
@@ -52,7 +54,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
 }));
-  
+
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
@@ -69,15 +71,64 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function Header(){
     let user = JSON.parse(localStorage.getItem('user'));
+    const [notifications , setNotification] = useState('');
+    const [allUsers, setAllUsers] = useState();
     const navigate = useNavigate();
 
     useEffect(()=>{
-    })
+        getAllUsers();
+        getNotifications();
+    },[]);
 
     function handleLogout(){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login')
+    }
+
+    const getNotifications = async () => {
+        const req = await fetch('http://localhost:5000/notifications');
+        const res = await req.json();
+        if(res.length > 0 && user) {
+            let result = res.filter(item => {return item.owner == user.id;});
+            result.sort((a,b)=> new Date(b.updatedon) - new Date(a.updatedon));
+            setNotification(result);
+        }else{
+            setNotification('')
+        }
+    }
+
+    const getAllUsers = async () => {
+        const request = await fetch(`http://localhost:5000/users`,{
+            method: 'GET',
+            headers: {
+                "Content-Type" : 'application/json'
+            }
+        });
+        const res = await request.json();
+        if(res.length > 0)
+            setAllUsers(res)
+    }
+
+    const getUserDataByUserId = (userid) => {
+        const res = allUsers && allUsers.filter(user => {return user.id === userid});
+        return res.length > 0 ? res[0].name : 'Unknown User';
+    }
+
+    const getTypeOfActionValue = (actiontype) => {
+        let typeofaction = null;
+        for(let key of Object.keys(ActionType)){
+            if(ActionType[key] == actiontype)
+                typeofaction = key;
+        }
+        switch(typeofaction){
+            case 'Like' :
+                return 'Liked by'
+            case 'Dislike' :
+                return 'Disliked by'
+            default :
+                return ''
+        }
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -134,7 +185,7 @@ function Header(){
                         <Typography sx={{ textAlign: 'center' }}>{user.name}</Typography>
                     </MenuItem>
                     {settings.map((setting) => (
-                        <MenuItem key={setting} 
+                        <MenuItem key={setting}
                             to={
                                 (`/${setting.toLowerCase()}` != '/logout') &&  `/${setting.toLowerCase()}`
                             }
@@ -172,21 +223,11 @@ function Header(){
                     open={isNotificationOpen}
                     onClose={handleMenuClose}
                     >
-                    <MenuItem key={user.name} >
-                        <Typography sx={{ textAlign: 'center' }}>{user.name}</Typography>
-                    </MenuItem>
-                    {settings.map((setting) => (
-                        <MenuItem key={setting} 
-                            to={
-                                (`/${setting.toLowerCase()}` != '/logout') &&  `/${setting.toLowerCase()}`
-                            }
-                            onClick = {()=>{
-                                if(`/${setting.toLowerCase()}` == '/logout')
-                                    handleLogout()
-                            }}
-                            component={Link}
-                        >
-                        <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                    {notifications && notifications.map((notification) => (
+                        <MenuItem key={notification.id} >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            <small>{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} at {moment(notification.updatedon).format('DD:MM:YYYY hh:mm:ss a')}</small>
+                        </Typography>
                         </MenuItem>
                     ))}
                 </Menu>
@@ -231,9 +272,18 @@ function Header(){
                         aria-haspopup="true"
                         color="inherit"
                         >
-                        <Badge badgeContent={0} color="error">
-                            <NotificationsIcon />
-                        </Badge>
+                        {
+                            notifications && notifications.length ?
+                            <>
+                                <Badge badgeContent={notifications && notifications.length} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </> : <>
+                                <Badge color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </>
+                        }
                         </IconButton>
                         <p>Notifications</p>
                     </MenuItem>
@@ -280,6 +330,18 @@ function Header(){
             </Typography>
             {
                 user && <>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                        {pages.map((page) => (
+                            <Button
+                                key={page}
+                                component={Link}
+                                to={`/${page.toLowerCase()}`}
+                                sx={{ my: 2, color: 'white', display: 'block' }}
+                            >
+                                {page}
+                            </Button>
+                        ))}
+                    </Box>
                     <Search>
                         <SearchIconWrapper>
                         <SearchIcon />
@@ -289,7 +351,8 @@ function Header(){
                         inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search>
-                    <Box sx={{ flexGrow: 1 }} />
+                    
+                    {/* <Box sx={{ flexGrow: 1 }} /> */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                         <Badge badgeContent={4} color="error">
@@ -301,9 +364,18 @@ function Header(){
                         aria-label="show 17 new notifications"
                         color="inherit"
                         >
-                        <Badge badgeContent={17} color="error">
-                            <NotificationsIcon />
-                        </Badge>
+                        {
+                            notifications && notifications.length ?
+                            <>
+                                <Badge badgeContent={notifications && notifications.length} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </> : <>
+                                <Badge color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </>
+                        }
                         </IconButton>
                         <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }} style={{marginLeft:'10px'}}>
                             <Avatar alt="Remy Sharp" src={user.image} />

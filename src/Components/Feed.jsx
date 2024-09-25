@@ -7,6 +7,9 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import axios from 'axios';
 import TypeOfFeed from './Enums/TypeOfFeed';
+import { NotificationType } from './Enums/NotificationType';
+import { Message } from './Enums/ErrorMessages';
+import { ActionType } from './Enums/ActionType';
 
 function Feed(){
     const [allUsers, setAllUsers] = useState();
@@ -42,11 +45,11 @@ function Feed(){
     const handleLike = async (item) => {
         item.likes.push(user.id);
         const index = item.dislikes.indexOf(user.id);
-        // If the item exists in the array, remove it using splice
         if (index > -1) {
-            item.dislikes.splice(index, 1); // 1 indicates the number of elements to remove
+            item.dislikes.splice(index, 1);
         }
         await updateFeed(item);
+        await sendNotification(item,user.id, ActionType.Like);
     }
 
     const handleRemoveLike = async (item) => {
@@ -57,11 +60,11 @@ function Feed(){
     const handleDisLike = async (item) => {
         item.dislikes.push(user.id);
         const index = item.likes.indexOf(user.id);
-        // If the item exists in the array, remove it using splice
         if (index > -1) {
-            item.likes.splice(index, 1); // 1 indicates the number of elements to remove
+            item.likes.splice(index, 1);
         }
         await updateFeed(item);
+        await sendNotification(item,user.id, ActionType.Dislike);
     }
 
     const handleRemoveDisLike = async (item) => {
@@ -74,7 +77,6 @@ function Feed(){
             axios
             .put(`http://localhost:5000/feed/${item.id}`, item)
             .then((response) => {
-                // console.log('Feed updated:', response.data);
                 getFeed()
             })
             .catch((error) => {
@@ -100,6 +102,28 @@ function Feed(){
     const getUserDataByUserId = (userid) => {
         const res = allUsers.filter(user => user.id === userid);
         return res[0];
+    }
+
+    const sendNotification = async (item,userid, actiontype) => {
+        let _body = {
+            actiontype : actiontype,
+            notificationtype : NotificationType.Feed,
+            itemId : item.id,
+            owner : item.postedby,
+            actionby : userid,
+            updatedon : new Date()
+        }
+        const req = await fetch('http://localhost:5000/notifications',{
+            method:'POST',
+            headers:{
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(_body)
+        }).then(()=>{
+            console.log("notification sent")
+        }).catch(error=>{
+            console.log("Error while sending notification")
+        })
     }
 
     return (
