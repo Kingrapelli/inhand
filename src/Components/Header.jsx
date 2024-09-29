@@ -73,12 +73,14 @@ const Header = () => {
     let user = JSON.parse(localStorage.getItem('user'));
     const [notifications , setNotification] = useState('');
     const [allUsers, setAllUsers] = useState();
+    const [allFeed, setAllFeed] = useState();
     const navigate = useNavigate();
 
     useEffect(()=>{
         getAllUsers();
+        getAllFeed();
         getNotifications();
-    });
+    },[]);
 
     function handleLogout(){
         localStorage.removeItem('token');
@@ -110,6 +112,18 @@ const Header = () => {
             setAllUsers(res);
     }
 
+    const getAllFeed = async () => {
+        const request = await fetch(`http://localhost:5000/feed`,{
+            method: 'GET',
+            headers: {
+                "Content-Type" : 'application/json'
+            }
+        });
+        const res = await request.json();
+        if(res.length > 0)
+            setAllFeed(res);
+    }
+
     const getUserDataByUserId = (userid) => {
         const res = allUsers && allUsers.filter(user => {return user.id === userid});
         return res.length > 0 ? res[0].name : 'Unknown User';
@@ -129,6 +143,11 @@ const Header = () => {
             default :
                 return '';
         }
+    }
+
+    const getFeedDetailsById = (itemid) => {
+        const result = allFeed && allFeed.filter(item=> item.id === itemid);
+        return result[0];
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -226,7 +245,11 @@ const Header = () => {
                     {(notifications && notifications.length) ? notifications.map((notification) => (
                         <MenuItem key={notification.id} >
                         <Typography sx={{ textAlign: 'center' }}>
-                            <small>{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} at {moment(notification.updatedon).format('DD:MM:YYYY hh:mm:ss a')}</small>
+                            <div><img src={getFeedDetailsById(notification.itemId).imagepath} height={35} width={35} style={{borderRadius:'5px'}}/>
+                            <span style={{marginLeft:'90px !important'}}>{getFeedDetailsById(notification.itemId).postTitle}</span> </div>
+                            <div>
+                                <small>{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} at {moment(notification.updatedon).format('DD:MM:YYYY hh:mm:ss a')}</small>
+                            </div>
                         </Typography>
                         </MenuItem>
                     )) : 

@@ -190,7 +190,9 @@ input,select {
   border: 1px solid #ccc;
   padding: 10px;
   height: 400px;
+  min-width: 100% !important;
   width: 300px;
+  max-width: 100% !important;
   overflow-y: scroll;
   margin-bottom: 10px;
 }
@@ -217,4 +219,70 @@ input,select {
 #kai button {
   width: 15%;
   padding: 5px;
+}
+
+
+/* Floating Button */
+.floating-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.floating-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Popup Background */
+.popup {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  /* height: 300px; */
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Popup Content */
+.popup-content {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Popup Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

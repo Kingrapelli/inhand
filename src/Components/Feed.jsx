@@ -11,11 +11,13 @@ import { NotificationType } from './Enums/NotificationType';
 import { Message } from './Enums/ErrorMessages';
 import { ActionType } from './Enums/ActionType';
 import { testing } from '../Services/auth';
+import KAI from './KAI';
 // import Chatbot from './Chatbot';
 
 function Feed(){
     const [allUsers, setAllUsers] = useState();
     const [feed, setFeed] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(()=>{
@@ -134,6 +136,11 @@ function Feed(){
         })
     }
 
+
+    const togglePopup = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <>
             <div className='feedmaindiv'>
@@ -192,6 +199,24 @@ function Feed(){
                         </Grid>
                     </div>
                 </div>
+            </div>
+            <div>
+            {/* Floating Button */}
+            <div className="floating-icon" onClick={togglePopup}>
+                💬
+            </div>
+
+            {/* Popup */}
+            {isOpen && (
+                <div className="popup">
+                <div className="popup-content">
+                    <span className="close" onClick={togglePopup}>&times;</span>
+                    {/* <h3>Assistant</h3>
+                    <p>How can I assist you today?</p> */}
+                    < KAI/>
+                </div>
+                </div>
+            )}
             </div>
         </>
     )

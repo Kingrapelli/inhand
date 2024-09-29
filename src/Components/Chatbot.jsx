@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import RequestType from './Enums/RequestType';
 
 const Chatbot = () => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
+  const exceptionalkeywords = ['hi','dear'];
+
+  useEffect(()=>{
+    setMessages([...messages, { sender: 'bot', text: 'Hi Dear, I am here to assist you!' }]);
+  },[]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -12,23 +18,57 @@ const Chatbot = () => {
     setMessages([...messages, userMessage]);
     console.log(userMessage);
     try {
-    //   const response = await axios.post('https://api.openai.com/v1/completions', {
-    //     model: "gpt-3.5-turbo",
-    //     prompt: input,
-    //     max_tokens: 100,
-    //   }, {
-    //     headers: {
-    //       'Authorization': `Bearer YOUR_OPENAI_API_KEY`,
-    //       'Content-Type': 'application/json',
-    //     },
-    //   });
+      let action = [];
+      let message = userMessage.text.split(" ");
+      console.log(message);
 
-      const botMessage = { sender: 'bot', text: 'Hi' };
-    //   const botMessage = { sender: 'bot', text: response.data.choices[0].text };
-      setMessages([...messages, userMessage, botMessage]);
+      message.forEach(item=>{
+        RequestType.forEach(type=>{
+          let tags = type.hashtags && type.hashtags.split(",");
+          if(tags && tags.length){
+            tags.forEach(tag=> {
+              if(tag.toLowerCase().includes(item.toLowerCase())){
+                action.push(type);
+                console.log("matched")
+              }
+            })
+          }
+        });
+      })
+      if(action.length == 0)
+        setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, Not found anything.' }]);
+      else{
+        console.log(action);
+        console.log(action[0].endpoint);
+        if(action[0].endpoint){
+          const req = await fetch(`http://localhost:5000/${action[0].endpoint}`);
+          const res = await req.json();
+          if(res.length > 0){
+            let checkingdatabase = [];
+            message.forEach(m=>{
+              res.forEach(item=>{
+                if(item.name.toLowerCase().includes(m.toLowerCase())){
+                  checkingdatabase.push(item);
+                }
+              })
+            });
+            console.log(checkingdatabase);
+            if(checkingdatabase.length){
+              setMessages([...messages,userMessage, { sender: 'bot', text: 'data matched in below records' }]);
+              checkingdatabase.forEach(item=>{
+                setMessages([...messages,userMessage, { sender: 'bot', text: item.name }]);
+              })
+            }else{
+              setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, Not found in database.' }]);
+            }
+          }
+        }
+      }
+      // const botMessage = { sender: 'bot', text: 'Hi' };
+      // setMessages([...messages, userMessage, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages([...messages, { sender: 'bot', text: 'Sorry, something went wrong.' }]);
+      setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, something went wrong.' }]);
     }
     setInput('');
   };

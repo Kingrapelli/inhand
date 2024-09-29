@@ -8,7 +8,7 @@ const KAI = () => {
     return (
         <>
             <div className="App" id='kai'>
-                <h1>KingRapelli's AI (KAI)</h1>
+                <h6>KingRapelli's AI (KAI)</h6>
                 <Chatbot />
             </div>
         </>
