@@ -44,6 +44,7 @@ const Chatbot = () => {
           const req = await fetch(`http://localhost:5000/${action[0].endpoint}`);
           const res = await req.json();
           if(res.length > 0){
+            console.log(res);
             let checkingdatabase = [];
             message.forEach(m=>{
               res.forEach(item=>{
@@ -54,13 +55,16 @@ const Chatbot = () => {
             });
             console.log(checkingdatabase);
             if(checkingdatabase.length){
-              setMessages([...messages,userMessage, { sender: 'bot', text: 'data matched in below records' }]);
+              let _text = 'data matched in below records';
               checkingdatabase.forEach(item=>{
-                setMessages([...messages,userMessage, { sender: 'bot', text: item.name }]);
+                _text = _text + " " + item.name + ",";
               })
+              setMessages([...messages,userMessage, { sender: 'bot', text: _text }]);
             }else{
-              setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, Not found in database.' }]);
+              setMessages([...messages,userMessage, { sender: 'bot', text: `Sorry, Specific records not found in database. Please navigate to ${action[0].name}` }]);
             }
+          }else{
+            setMessages([...messages,userMessage, { sender: 'bot', text: `Data not available in ${action[0].name} Database` }]);
           }
         }
       }

@@ -62,7 +62,23 @@
     }
   ],
   "products": [],
-  "restaurants": [],
+  "restaurants": [
+    {
+      "id": "de57",
+      "name": "Malathi Food court",
+      "type": "1003",
+      "description": "The great Raj's travels provides you the great respect",
+      "location": "4001",
+      "createdBy": "74e4"
+    },{
+      "id": "de58",
+      "name": "Kritinga Restarant",
+      "type": "1003",
+      "description": "The great Raj's travels provides you the great respect",
+      "location": "4001",
+      "createdBy": "74e4"
+    }
+  ],
   "transport": [
     {
       "id": "de86",
