@@ -4,7 +4,7 @@ const RequestType = [
         actiontype : '',
         route : 'bookings',
         endpoint : 'transport',
-        hashtags : 'booking, travel, journey, enjoy, bus, train, cab, flight'
+        hashtags : 'book, travel, journey, enjoy, bus, train, cab, flight'
     },{
         name : 'shopping',
         actiontype : '',

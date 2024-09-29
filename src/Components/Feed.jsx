@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, IconButton } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -19,11 +19,16 @@ function Feed(){
     const [feed, setFeed] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
+    const popupRef = useRef(null);
 
     useEffect(()=>{
         getAllUsers();
         getFeed();
         testingauth();
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     },[])
 
     async function testingauth () {
@@ -139,6 +144,12 @@ function Feed(){
 
     const togglePopup = () => {
         setIsOpen(!isOpen);
+    };
+
+    const handleClickOutside = (e) => {
+        if (popupRef.current && !popupRef.current.contains(e.target)) {
+          setIsOpen(false);
+        }
     };
 
     return (
