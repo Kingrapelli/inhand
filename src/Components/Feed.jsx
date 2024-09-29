@@ -10,6 +10,8 @@ import TypeOfFeed from './Enums/TypeOfFeed';
 import { NotificationType } from './Enums/NotificationType';
 import { Message } from './Enums/ErrorMessages';
 import { ActionType } from './Enums/ActionType';
+import { testing } from '../Services/auth';
+// import Chatbot from './Chatbot';
 
 function Feed(){
     const [allUsers, setAllUsers] = useState();
@@ -19,7 +21,13 @@ function Feed(){
     useEffect(()=>{
         getAllUsers();
         getFeed();
+        testingauth();
     },[])
+
+    async function testingauth () {
+        const res = await testing();
+        console.log(res);
+    }
 
     const getFeed = async () => {
         const req = await fetch(`http://localhost:5000/feed`,{
@@ -100,7 +108,7 @@ function Feed(){
     }
 
     const getUserDataByUserId = (userid) => {
-        const res = allUsers.filter(user => user.id === userid);
+        const res = allUsers && allUsers.filter(user => user.id === userid);
         return res[0];
     }
 

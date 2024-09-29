@@ -13,6 +13,9 @@ import NewBooking from './Components/Booking/NewBooking';
 import FoodMain from './Components/Food/FoodMain';
 import ShoppingMain from './Components/Shopping/ShoppingMain';
 import Settings from './Components/Settings';
+import Todos from './Components/Todos';
+import LoginNew from './Components/LoginNew';
+import KAI from './Components/KAI';
 // import { browserHistory, Router, Route  } from 'react-router';
 const { default: jwt_decode } = require("jwt-decode");
 
@@ -60,6 +63,8 @@ function App() {
           <Route path='/food' element={token ? < FoodMain /> : <Navigate to="/login"/>} />
           <Route path='/shopping' element={token ? < ShoppingMain /> : <Navigate to="/login"/>} />
           <Route path='/settings' element={token ? < Settings /> : <Navigate to="/login"/>} />
+          <Route path='/kai' element={token ? < KAI /> : <Navigate to="/login"/>} />
+          {/* <Route path='/todos' element={token ? < Todos /> : <Navigate to="/login"/>} /> */}
         </Routes >
         <></>
     </>

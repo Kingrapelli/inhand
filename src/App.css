@@ -184,3 +184,37 @@ input,select {
   height: 700px !important;
   overflow: auto !important;
 }
+
+
+#kai .chat-window {
+  border: 1px solid #ccc;
+  padding: 10px;
+  height: 400px;
+  width: 300px;
+  overflow-y: scroll;
+  margin-bottom: 10px;
+}
+
+#kai .message {
+  margin-bottom: 10px;
+}
+
+#kai .message.user {
+  text-align: right;
+  color: blue;
+}
+
+#kai .message.bot {
+  text-align: left;
+  color: green;
+}
+
+#kai input {
+  width: 80%;
+  padding: 5px;
+}
+
+#kai button {
+  width: 15%;
+  padding: 5px;
+}

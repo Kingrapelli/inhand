@@ -1,9 +1,12 @@
 import React from 'react';
 import { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { register } from '../Services/auth';
 
 function Signup(){
     const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     let image ;
 
     const [user, setUser] = useState({
@@ -56,6 +59,15 @@ function Signup(){
         });
     }
 
+    const handleRegister = async () => {
+        try {
+          await register(username, password);
+          alert('Registration successful');
+        } catch (error) {
+          console.error('Registration error', error);
+        }
+    };
+
     function NavigateToLogin () {
         navigate('/login');
     }
@@ -81,15 +93,15 @@ function Signup(){
             <div id='logindiv'>
                 <form >
                     <img src='adduser.jpg' alt='' height={120} width={120}></img>
-                    <input
+                    {/* <input
                         type='text'
                         name='name'
                         value={user.name}
                         placeholder='Full Name'
                         onChange={handleChane}
                         required>
-                    </input>
-                    <input
+                    </input> */}
+                    {/* <input
                         type='email'
                         name='email'
                         value={user.email}
@@ -104,9 +116,21 @@ function Signup(){
                         placeholder='Password'
                         onChange={handleChane}
                         required>
-                    </input>
+                    </input> */}
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                     <input type="file" name='path' onChange={onImageChange} className="filetype" required />
-                    <button id='signin' type='button' onClick={handleSubmit}>SignUp</button>
+                    <button id='signin' type='button' onClick={handleRegister}>SignUp</button>
                     <p>Already have an account? <a onClick={NavigateToLogin} style={{cursor:'pointer'}}>Login</a></p>
                 </form>
             </div>

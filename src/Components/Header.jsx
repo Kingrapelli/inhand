@@ -25,7 +25,7 @@ import { styled, alpha } from '@mui/material/styles';
 import moment from 'moment';
 import { ActionType } from './Enums/ActionType';
 
-const pages = ['Home','Bookings','Shopping','Food'];
+const pages = ['Home','Bookings','Shopping','Food','KAI'];
 const settings = ['Profile', 'Dashboard','Settings', 'Logout'];
 
 
@@ -69,7 +69,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-function Header(){
+const Header = () => {
     let user = JSON.parse(localStorage.getItem('user'));
     const [notifications , setNotification] = useState('');
     const [allUsers, setAllUsers] = useState();
@@ -78,12 +78,12 @@ function Header(){
     useEffect(()=>{
         getAllUsers();
         getNotifications();
-    },[]);
+    });
 
     function handleLogout(){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        navigate('/login')
+        navigate('/login');
     }
 
     const getNotifications = async () => {
@@ -94,7 +94,7 @@ function Header(){
             result.sort((a,b)=> new Date(b.updatedon) - new Date(a.updatedon));
             setNotification(result);
         }else{
-            setNotification('')
+            setNotification('');
         }
     }
 
@@ -107,7 +107,7 @@ function Header(){
         });
         const res = await request.json();
         if(res.length > 0)
-            setAllUsers(res)
+            setAllUsers(res);
     }
 
     const getUserDataByUserId = (userid) => {
@@ -123,11 +123,11 @@ function Header(){
         }
         switch(typeofaction){
             case 'Like' :
-                return 'Liked by'
+                return 'Liked by';
             case 'Dislike' :
-                return 'Disliked by'
+                return 'Disliked by';
             default :
-                return ''
+                return '';
         }
     }
 
@@ -223,13 +223,18 @@ function Header(){
                     open={isNotificationOpen}
                     onClose={handleMenuClose}
                     >
-                    {notifications && notifications.map((notification) => (
+                    {(notifications && notifications.length) ? notifications.map((notification) => (
                         <MenuItem key={notification.id} >
                         <Typography sx={{ textAlign: 'center' }}>
                             <small>{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} at {moment(notification.updatedon).format('DD:MM:YYYY hh:mm:ss a')}</small>
                         </Typography>
                         </MenuItem>
-                    ))}
+                    )) : 
+                    <MenuItem key='emptynotification' >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            <small>No notifications found</small>
+                        </Typography>
+                    </MenuItem>}
                 </Menu>
             </>
         }
