@@ -32,6 +32,15 @@
       "owner": "74e4",
       "actionby": "599f",
       "updatedon": "2024-09-30T04:31:21.717Z"
+    },
+    {
+      "id": "5850",
+      "actiontype": 8001,
+      "notificationtype": 7001,
+      "itemId": "3456",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-09-30T15:43:27.383Z"
     }
   ],
   "products": [],
@@ -77,6 +86,38 @@
       "description": "nothing1",
       "location": "4003",
       "createdBy": "74e4"
+    },
+    {
+      "id": "020f",
+      "name": "V travels",
+      "type": "1001",
+      "description": "",
+      "location": "4001",
+      "createdBy": "74e4"
+    },
+    {
+      "id": "04b9",
+      "name": "V travels",
+      "type": "1004",
+      "description": "",
+      "location": "4005",
+      "createdBy": "74e4"
+    },
+    {
+      "id": "f33f",
+      "name": "V travels",
+      "type": "1003",
+      "description": "",
+      "location": "4004",
+      "createdBy": "74e4"
+    },
+    {
+      "id": "14ee",
+      "name": "Orange Travels",
+      "type": "1001",
+      "description": "",
+      "location": "4001",
+      "createdBy": "74e4"
     }
   ],
   "hotels": [],
@@ -84,6 +125,7 @@
   "feed": [
     {
       "id": "1234",
+      "feedtype": "6002",
       "postedby": "74e4",
       "postedon": "2023-07-25T23:00:00",
       "postTitle": "About our freedom",
@@ -94,6 +136,7 @@
     },
     {
       "id": "2345",
+      "feedtype": "6003",
       "postedby": "599f",
       "postedon": "2023-08-15T11:00:00",
       "postTitle": "Raise your voice",
@@ -104,18 +147,21 @@
     },
     {
       "id": "3456",
+      "feedtype": "6002",
       "postedby": "74e4",
       "postedon": "2024-07-20T12:00:00",
       "postTitle": "Keep motivated",
       "imagepath": "download.jpg",
       "description": "we got our freedom in 1947 but still struggling to get motiviated",
       "likes": [
-        "599f"
+        "599f",
+        "74e4"
       ],
       "dislikes": []
     },
     {
       "id": "4567",
+      "feedtype": "6005",
       "postedby": "599f",
       "postedon": "2024-01-05T05:00:00",
       "postTitle": "Be unique",

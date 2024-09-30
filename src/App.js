@@ -24,31 +24,8 @@ function App() {
   const token = localStorage.getItem('token');
   
   useEffect(()=>{
-    // console.log(token, localStorage.getItem('token'));
-    // if(!localStorage.getItem('token')){
-    //   const token = localStorage.getItem('token');
-    //   if(isTokenExpired(token)){
-    //     localStorage.removeItem('token');
-    //     navigate('/login');
-    //   }else{
-    //     setUser(JSON.parse(localStorage.getItem('user')));
-    //   }
-    // }else{
-    //   navigate('/login');
-    // }
-  },[]);
 
-  // const isTokenExpired = (token) => {
-  //   if(!token) return false;
-  //   try{
-  //     const decodedToken = jwt_decode(token);
-  //     const currentTime = Date.now() / 1000;
-  //     return decodedToken.exp < currentTime;
-  //   }catch(error){
-  //     console.log("Error while decoding token",error);
-  //     return false;
-  //   }
-  // }
+  },[]);
 
   return (
     <>
@@ -66,6 +43,7 @@ function App() {
           {/* <Route path='/kai' element={token ? < KAI /> : <Navigate to="/login"/>} /> */}
           {/* <Route path='/todos' element={token ? < Todos /> : <Navigate to="/login"/>} /> */}
         </Routes >
+        <KAI></KAI>
         <></>
     </>
   );

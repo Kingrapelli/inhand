@@ -12,31 +12,38 @@ import { Message } from './Enums/ErrorMessages';
 import { ActionType } from './Enums/ActionType';
 import { testing } from '../Services/auth';
 import KAI from './KAI';
-// import Chatbot from './Chatbot';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import AppBar from '@mui/material/AppBar';
+import CssBaseline from '@mui/material/CssBaseline';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import Header from './Header';
+
+const drawerWidth = 240;
 
 function Feed(){
     const [allUsers, setAllUsers] = useState();
+    const [feedtype , setFeedType] = useState(6001);
     const [feed, setFeed] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
-    const popupRef = useRef(null);
 
     useEffect(()=>{
         getAllUsers();
         getFeed();
-        testingauth();
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
     },[]);
 
-    async function testingauth () {
-        const res = await testing();
-        console.log(res);
-    }
-
-    const getFeed = async () => {
+    const getFeed = async (e) => {
+        if(e && e.target && e.target.value){
+            setFeedType(e.target.value)
+        }
         const req = await fetch(`http://localhost:5000/feed`,{
             method: 'GET',
             headers: {
@@ -45,10 +52,13 @@ function Feed(){
         })
         const res = await req.json('');
         if(res.length > 0){
-            res.sort((a,b)=>new Date(b.postedon) - new Date(a.postedon)); //sorting based on creation date
-            setFeed(res);
+            let _res = res.sort((a,b)=>new Date(b.postedon) - new Date(a.postedon)); //sorting based on creation date
+            if(e && e.target && e.target.value && e.target.value != '6001'){
+                _res = _res && _res.filter(item=> {return item.feedtype == e.target.value});
+            }
+            setFeed(_res);
         }else{
-            alert("No feed available")
+            setFeed(null);
         }
     }
 
@@ -92,7 +102,7 @@ function Feed(){
             axios
             .put(`http://localhost:5000/feed/${item.id}`, item)
             .then((response) => {
-                getFeed()
+                getFeed();
             })
             .catch((error) => {
                 console.error('There was an error!', error);
@@ -141,94 +151,117 @@ function Feed(){
         })
     }
 
-
-    const togglePopup = () => {
-        setIsOpen(!isOpen);
-    };
-
-    const handleClickOutside = (e) => {
-        if (popupRef.current && !popupRef.current.contains(e.target)) {
-          setIsOpen(false);
+    function getMasterDataById (id,type){
+        let _type = (type == 'feedtype') ? TypeOfFeed :  [];
+        for(let item of _type){
+            if(item.value == id){
+                return item.name;
+            }
         }
-    };
+    }
 
     return (
         <>
-            <div className='feedmaindiv'>
-                <div className='leftboardermenu' >
-                    <ul>
-                        {TypeOfFeed && TypeOfFeed.map((item,index)=>{
-                            return <li key={item.value} value={item.value}>{item.name}</li>
-                        })}
-                    </ul>
-                </div>
-                <div className='container' style={{overflowY: "auto", height: '100% !important'}}>
-                    <div className='feedbox'>
-                    <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
-                        {feed && feed.map((item) => (
-                            <Card sx={{ minWidth: '300px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px' }}>
-                                <CardMedia
-                                    component="img"
-                                    height="200"
-                                    image={item.imagepath}
-                                    alt="Placeholder image"
-                                />
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        {/* <img src={item.image} height={30} width={30}/>{item.postTitle}  */}
-                                        <span style={{float:'left'}}>
-                                            <img src={getUserDataByUserId(item.postedby).image} height={30} width={30} style={{borderRadius:'20px'}} /> 
-                                            <small style={{fontSize:'medium'}}> {getUserDataByUserId(item.postedby).name}</small>
-                                        </span>
-                                        <small style={{fontSize:'medium'}}>- {item.postTitle}</small>
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {item.description}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    { getUserIdFromLikes(item.likes) 
-                                        ?   <IconButton onClick={()=>handleRemoveLike(item)} >
-                                                <ThumbUpIcon style={{cursor:'pointer'}}/>
-                                            </IconButton>
-                                        :   <IconButton onClick={()=>handleLike(item)} >
-                                                <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
-                                            </IconButton> }{item.likes.length}
-                                    {getUserIdFromLikes(item.dislikes) 
-                                        ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
-                                                <ThumbDownAltIcon style={{cursor:'pointer'}}/>
-                                            </IconButton> 
-                                        :   <IconButton onClick={()=> handleDisLike(item)} >
-                                                <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
-                                            </IconButton> }{item.dislikes.length}
-                                    <Button style={{fontSize:'10px'}} size="small">Share</Button>
-                                    <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
-                                    <small style={{fontSize:'10px'}}>Posted on : {item.postedon}</small>
-                                </CardActions>
-                            </Card>
+            {/* <Drawer
+                variant="permanent"
+                sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                }}
+                
+            >
+                <Box sx={{ overflow: 'auto', top: '70px' }}>
+                    <List>
+                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                        <ListItem key={text} disablePadding>
+                            <ListItemButton>
+                            <ListItemIcon>
+                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            </ListItemIcon>
+                            <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
                         ))}
-                        </Grid>
+                    </List>
+                    <Divider />
+                    <List>
+                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                        <ListItem key={text} disablePadding>
+                            <ListItemButton>
+                            <ListItemIcon>
+                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            </ListItemIcon>
+                            <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
+                        ))}
+                    </List>
+                </Box>
+            </Drawer> */}
+            <div className='container leftboardermenu' >
+                <ul>
+                    {TypeOfFeed && TypeOfFeed.map((item,index)=>{
+                        return <li key={item.value} value={item.value} onClick={getFeed}>{item.name}</li>
+                    })}
+                </ul>
+            </div>
+            {feed &&
+                <div className='container '>
+                {/* <div className='container ' sx={{ flexGrow: 1, p: 3 }}> */}
+                    <div className='feedmaindiv' style={{height: '100% !important'}}> 
+                        
+                        <div >
+                        {/* className='feedbox' */}
+                        <h5 style={{float:'left'}}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
+                        <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
+                            {feed && feed.map((item) => (
+                                <Card sx={{ minWidth: '100px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px' }}>
+                                    <CardMedia
+                                        component="img"
+                                        height="200"
+                                        image={item.imagepath}
+                                        alt="Placeholder image"
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {/* <img src={item.image} height={30} width={30}/>{item.postTitle}  */}
+                                            <span style={{float:'left'}}>
+                                                <img src={getUserDataByUserId(item.postedby).image || '/userprofiles/defaultpicture.png'} height={30} width={30} style={{borderRadius:'20px'}} />
+                                                <small style={{fontSize:'medium'}}> {getUserDataByUserId(item.postedby).name}</small>
+                                            </span>
+                                            <small style={{fontSize:'medium'}}>- {item.postTitle}</small>
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {item.description}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        { getUserIdFromLikes(item.likes) 
+                                            ?   <IconButton onClick={()=>handleRemoveLike(item)} >
+                                                    <ThumbUpIcon style={{cursor:'pointer'}}/>
+                                                </IconButton>
+                                            :   <IconButton onClick={()=>handleLike(item)} >
+                                                    <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
+                                                </IconButton> }{item.likes.length}
+                                        {getUserIdFromLikes(item.dislikes) 
+                                            ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
+                                                    <ThumbDownAltIcon style={{cursor:'pointer'}}/>
+                                                </IconButton> 
+                                            :   <IconButton onClick={()=> handleDisLike(item)} >
+                                                    <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
+                                                </IconButton> }{item.dislikes.length}
+                                        <Button style={{fontSize:'10px'}} size="small">Share</Button>
+                                        <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
+                                        <small style={{fontSize:'10px'}}>Posted on : {item.postedon}</small>
+                                    </CardActions>
+                                </Card>
+                            ))}
+                            </Grid>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                {/* Floating Button */}
-                <div className="floating-icon" onClick={togglePopup}>
-                    💬
-                </div>
-
-                {/* Popup */}
-                {isOpen && (
-                    <div className="popup">
-                    <div className="popup-content">
-                        <span className="close" onClick={togglePopup}>&times;</span>
-                        {/* <h3>Assistant</h3>
-                        <p>How can I assist you today?</p> */}
-                        < KAI/>
-                    </div>
-                    </div>
-                )}
-            </div>
+            }
         </>
     )
 }

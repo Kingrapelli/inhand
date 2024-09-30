@@ -127,12 +127,13 @@ input,select {
 
 .leftboardermenu{
   border: 1px solid white;
-  min-width: 100px;
-  max-width: 250px;
-  width: 160px;
+  min-width: 90px !important;
+  max-width: 250px !important;
+  width: 180px !important;
+  /* overflow: auto; */
   position: absolute;
   left: 0;
-  height: 100% !important;
+  height: 800px !important;
   background-color: #1976d2;
   display: flex;
 }
@@ -141,6 +142,7 @@ input,select {
   font-size: 16px !important;
   font-weight: 500;
   padding: 12px;
+  /* overflow: auto; */
   color: white;
   cursor: pointer;
 }
@@ -157,14 +159,14 @@ input,select {
 
 #location{
   width: 25%;
-  padding: 12px 20px;
+  /* padding: 12px 20px; */
   margin: 5px !important;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
   float: right;
-  height: 30px;
+  /* height: 30px !important; */
 }
 
 .feedbox {
@@ -182,7 +184,8 @@ input,select {
 
 .feedmaindiv {
   height: 700px !important;
-  overflow: auto !important;
+  /* overflow-y: auto !important; */
+  margin-left: 100px;
 }
 
 
@@ -290,4 +293,18 @@ input,select {
 
 .notificationimage{
   float: left;
+}
+
+/* .MuiToolbar-root:nth-child(2) {
+  display: none !important;
+  visibility: hidden !important;
+} */
+
+.container {
+  display: flex !important; /* Use Flexbox to align items side by side */
+  justify-content: space-between !important; /* Distribute space between the boxes */
+}
+
+.MuiPaper-root  {
+  top: 70px !important;
 }

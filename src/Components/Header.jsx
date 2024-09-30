@@ -148,7 +148,7 @@ const Header = () => {
 
     const getFeedDetailsById = (itemid) => {
         const result = allFeed && allFeed.filter(item=> item.id === itemid);
-        return result[0];
+        return result && result[0];
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -327,7 +327,7 @@ const Header = () => {
                         color="inherit"
                         >
                         {/* <AccountCircle /> */}
-                        <Avatar alt="Remy Sharp" src={user.image} />
+                        <Avatar alt="Remy Sharp" src={user.image || '/userprofiles/defaultpicture.png'} />
                         </IconButton>
                         <p>Profile</p>
                     </MenuItem>
@@ -338,8 +338,8 @@ const Header = () => {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <Box sx={{ flexGrow: 1 }} style={{position:'relative'}}>
+        <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             <Typography
@@ -409,7 +409,7 @@ const Header = () => {
                         }
                         </IconButton>
                         <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }} style={{marginLeft:'10px'}}>
-                            <Avatar alt="Remy Sharp" src={user.image} />
+                            <Avatar alt="Remy Sharp" src={user.image || '/userprofiles/defaultpicture.png'} />
                         </IconButton>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
