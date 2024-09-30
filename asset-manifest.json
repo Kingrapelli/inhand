@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/inhand/static/css/main.0f5242df.css",
+    "main.js": "/inhand/static/js/main.c45e25c5.js",
+    "static/js/453.3f326e71.chunk.js": "/inhand/static/js/453.3f326e71.chunk.js",
+    "static/media/logo.svg": "/inhand/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/inhand/index.html",
+    "main.0f5242df.css.map": "/inhand/static/css/main.0f5242df.css.map",
+    "main.c45e25c5.js.map": "/inhand/static/js/main.c45e25c5.js.map",
+    "453.3f326e71.chunk.js.map": "/inhand/static/js/453.3f326e71.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0f5242df.css",
+    "static/js/main.c45e25c5.js"
+  ]
+}
