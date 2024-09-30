@@ -24,8 +24,9 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import { styled, alpha } from '@mui/material/styles';
 import moment from 'moment';
 import { ActionType } from './Enums/ActionType';
+import { timeAgo } from './Utilities/TimeAgo';
 
-const pages = ['Home','Bookings','Shopping','Food','KAI'];
+const pages = ['Home','Bookings','Shopping','Food'];
 const settings = ['Profile', 'Dashboard','Settings', 'Logout'];
 
 
@@ -245,13 +246,15 @@ const Header = () => {
                     {(notifications && notifications.length) ? notifications.map((notification) => (
                         <MenuItem key={notification.id} >
                         <Typography sx={{ textAlign: 'center' }}>
-                            <div><img src={getFeedDetailsById(notification.itemId).imagepath} height={35} width={35} style={{borderRadius:'5px'}}/>
-                            <span style={{marginLeft:'90px !important'}}>{getFeedDetailsById(notification.itemId).postTitle}</span> </div>
-                            <div>
-                                <small>{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} at {moment(notification.updatedon).format('DD:MM:YYYY hh:mm:ss a')}</small>
-                            </div>
+                            <span style={{display:'flex'}}><img src={getFeedDetailsById(notification.itemId).imagepath} height={40} width={40} style={{borderRadius:'5px', display:'flex'}}/>
+                            <span > &nbsp;{getFeedDetailsById(notification.itemId).postTitle}</span> </span>
+                            <span>
+                                <small >{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} - {timeAgo(notification.updatedon)}</small>
+                                {/* <small >{getTypeOfActionValue(notification.actiontype)} {getUserDataByUserId(notification.actionby)} at {moment(notification.updatedon).format('DD:MM:YYYY hh:mm:ss a')}</small> */}
+                            </span>
                         </Typography>
                         </MenuItem>
+                        
                     )) : 
                     <MenuItem key='emptynotification' >
                         <Typography sx={{ textAlign: 'center' }}>

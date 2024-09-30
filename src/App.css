@@ -229,7 +229,8 @@ input,select {
   right: 20px;
   width: 50px;
   height: 50px;
-  background-color: #007bff;
+  background-color: #1976d2;
+  /* background-color: #007bff; */
   color: white;
   border-radius: 50%;
   display: flex;
@@ -285,4 +286,8 @@ input,select {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.notificationimage{
+  float: left;
 }

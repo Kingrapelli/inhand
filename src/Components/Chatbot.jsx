@@ -6,7 +6,7 @@ import Locations from './Enums/LocationEnum';
 const Chatbot = () => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
-  const exceptionalkeywords = ['hi','dear','is','a','an','please','kindly','are','in', 'travels', 'travel'];
+  const exceptionalkeywords = ['hi','dear','is','a','an','please','kindly','are','in', 'travels', 'travel', 'I', 'am'];
 
   useEffect(()=>{
     setMessages([...messages, { sender: 'bot', text: 'Hi Dear, I am here to assist you!' }]);

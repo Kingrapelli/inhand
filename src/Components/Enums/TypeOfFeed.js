@@ -4,7 +4,8 @@ const TypeOfFeed = [
     {name : 'Motivated', value: 6003},
     {name : 'Bookings', value: 6004},
     {name : 'Shopping', value: 6005},
-    {name : 'Food', value: 6006}
+    {name : 'Food', value: 6006},
+    {name : 'Other', value: 6007},
 ]
 
 export default TypeOfFeed;

@@ -25,40 +25,13 @@
   ],
   "notifications": [
     {
-      "id": "c43f",
-      "actiontype": 8001,
-      "notificationtype": 7001,
-      "itemId": "4567",
-      "owner": "599f",
-      "actionby": "74e4",
-      "updatedon": "2024-09-27T17:31:23.883Z"
-    },
-    {
-      "id": "eb2c",
+      "id": "a7f9",
       "actiontype": 8001,
       "notificationtype": 7001,
       "itemId": "3456",
       "owner": "74e4",
       "actionby": "599f",
-      "updatedon": "2024-09-27T17:31:37.164Z"
-    },
-    {
-      "id": "73b0",
-      "actiontype": 8001,
-      "notificationtype": 7001,
-      "itemId": "1234",
-      "owner": "74e4",
-      "actionby": "599f",
-      "updatedon": "2024-09-27T17:31:44.533Z"
-    },
-    {
-      "id": "c336",
-      "actiontype": 8001,
-      "notificationtype": 7001,
-      "itemId": "4567",
-      "owner": "599f",
-      "actionby": "599f",
-      "updatedon": "2024-09-27T17:31:56.417Z"
+      "updatedon": "2024-09-30T04:31:21.717Z"
     }
   ],
   "products": [],
@@ -116,9 +89,7 @@
       "postTitle": "About our freedom",
       "imagepath": "download1.jpg",
       "description": "we got our freedom in 1947 but still struggling to get freedom",
-      "likes": [
-        "599f"
-      ],
+      "likes": [],
       "dislikes": []
     },
     {
@@ -150,10 +121,7 @@
       "postTitle": "Be unique",
       "imagepath": "download4.jpg",
       "description": "we got our freedom in 1947 but still struggling to be unique rather than being like others",
-      "likes": [
-        "74e4",
-        "599f"
-      ],
+      "likes": [],
       "dislikes": []
     }
   ]

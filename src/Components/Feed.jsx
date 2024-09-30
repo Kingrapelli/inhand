@@ -29,7 +29,7 @@ function Feed(){
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    },[])
+    },[]);
 
     async function testingauth () {
         const res = await testing();
@@ -212,22 +212,22 @@ function Feed(){
                 </div>
             </div>
             <div>
-            {/* Floating Button */}
-            <div className="floating-icon" onClick={togglePopup}>
-                💬
-            </div>
+                {/* Floating Button */}
+                <div className="floating-icon" onClick={togglePopup}>
+                    💬
+                </div>
 
-            {/* Popup */}
-            {isOpen && (
-                <div className="popup">
-                <div className="popup-content">
-                    <span className="close" onClick={togglePopup}>&times;</span>
-                    {/* <h3>Assistant</h3>
-                    <p>How can I assist you today?</p> */}
-                    < KAI/>
-                </div>
-                </div>
-            )}
+                {/* Popup */}
+                {isOpen && (
+                    <div className="popup">
+                    <div className="popup-content">
+                        <span className="close" onClick={togglePopup}>&times;</span>
+                        {/* <h3>Assistant</h3>
+                        <p>How can I assist you today?</p> */}
+                        < KAI/>
+                    </div>
+                    </div>
+                )}
             </div>
         </>
     )

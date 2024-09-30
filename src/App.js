@@ -63,7 +63,7 @@ function App() {
           <Route path='/food' element={token ? < FoodMain /> : <Navigate to="/login"/>} />
           <Route path='/shopping' element={token ? < ShoppingMain /> : <Navigate to="/login"/>} />
           <Route path='/settings' element={token ? < Settings /> : <Navigate to="/login"/>} />
-          <Route path='/kai' element={token ? < KAI /> : <Navigate to="/login"/>} />
+          {/* <Route path='/kai' element={token ? < KAI /> : <Navigate to="/login"/>} /> */}
           {/* <Route path='/todos' element={token ? < Todos /> : <Navigate to="/login"/>} /> */}
         </Routes >
         <></>
