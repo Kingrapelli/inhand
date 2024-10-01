@@ -26,7 +26,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import Header from './Header';
-
+const moment = require('moment');
 const drawerWidth = 240;
 
 function Feed(){
@@ -216,7 +216,7 @@ function Feed(){
                         <h5 style={{float:'left'}}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
                         <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
                             {feed && feed.map((item) => (
-                                <Card sx={{ minWidth: '100px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px' }}>
+                                <Card sx={{ minWidth: '100px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px 15px 5px 15px' }}>
                                     <CardMedia
                                         component="img"
                                         height="200"
@@ -253,7 +253,7 @@ function Feed(){
                                                 </IconButton> }{item.dislikes.length}
                                         <Button style={{fontSize:'10px'}} size="small">Share</Button>
                                         <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
-                                        <small style={{fontSize:'10px'}}>Posted on : {item.postedon}</small>
+                                        <small style={{fontSize:'10px'}}>Posted on : {moment(item.postedon).format('MMMM Do, YYYY, h:mm:ss A')}</small>
                                     </CardActions>
                                 </Card>
                             ))}

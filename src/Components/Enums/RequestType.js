@@ -22,7 +22,8 @@ const RequestType = [
         actiontype : 'cancel'
     },{
         name : 'create',
-        actiontype : 'new'
+        actiontype : 'new',
+        hashtags : 'create, new, user, signup'
     },
 ]
 
