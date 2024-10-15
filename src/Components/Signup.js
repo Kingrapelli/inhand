@@ -2,6 +2,7 @@ import React from 'react';
 import { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../Services/auth';
+import { validateExistingUser } from './Utilities/TimeAgo';
 
 function Signup(){
     const navigate = useNavigate();
@@ -40,7 +41,7 @@ function Signup(){
     const handleSubmit = async () => {
         if(user.name == '' || user.email == '' || user.password == '')
             return
-        const validatinguser = await validateExistingUser();
+        const validatinguser = await validateExistingUser(user);
         if(validatinguser){
             alert("Email already exists")
             return 
@@ -70,22 +71,6 @@ function Signup(){
 
     function NavigateToLogin () {
         navigate('/login');
-    }
-
-    const validateExistingUser = async () => {
-        const request = await fetch(`http://localhost:5000/users`,{
-            method: 'GET',
-            headers: {
-                "Content-Type" : 'application/json'
-            }
-        });
-        const res = await request.json();
-        if(res.length){
-            const userpresence = res.find(data => data.email === user.email);
-            return userpresence ? true : false;
-        }else{
-            return false;
-        }
     }
 
     return (
@@ -130,7 +115,7 @@ function Signup(){
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <input type="file" name='path' onChange={onImageChange} className="filetype" required />
-                    <button id='signin' type='button' onClick={handleRegister}>SignUp</button>
+                    <button id='signin' type='button' onClick={handleSubmit}>SignUp</button>
                     <p>Already have an account? <a onClick={NavigateToLogin} style={{cursor:'pointer'}}>Login</a></p>
                 </form>
             </div>

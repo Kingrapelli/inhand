@@ -45,3 +45,19 @@ export function timeAgo(date) {
 
   return `${seconds} seconds ago`;
 }
+
+export const validateExistingUser = async (user) => {
+  const request = await fetch(`http://localhost:5000/users`,{
+      method: 'GET',
+      headers: {
+          "Content-Type" : 'application/json'
+      }
+  });
+  const res = await request.json();
+  if(res.length){
+      const userpresence = res.find(data => data.email === user.email);
+      return userpresence ? true : false;
+  }else{
+      return false;
+  }
+}

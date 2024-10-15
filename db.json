@@ -21,6 +21,14 @@
       "password": "sai",
       "city": "",
       "path": ""
+    },
+    {
+      "id": "789b",
+      "name": "navneeth",
+      "email": "navneeth@gmail.com",
+      "password": "navneeth",
+      "city": "",
+      "path": ""
     }
   ],
   "notifications": [
@@ -41,6 +49,15 @@
       "owner": "74e4",
       "actionby": "74e4",
       "updatedon": "2024-09-30T15:43:27.383Z"
+    },
+    {
+      "id": "6272",
+      "actiontype": 8001,
+      "notificationtype": 7001,
+      "itemId": "3456",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-10-14T15:19:49.055Z"
     }
   ],
   "products": [],
@@ -154,8 +171,7 @@
       "imagepath": "download.jpg",
       "description": "we got our freedom in 1947 but still struggling to get motiviated",
       "likes": [
-        "599f",
-        "74e4"
+        "599f"
       ],
       "dislikes": []
     },

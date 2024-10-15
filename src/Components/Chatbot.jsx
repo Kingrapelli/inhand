@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import RequestType from './Enums/RequestType';
 import Locations from './Enums/LocationEnum';
+import { validateExistingUser } from './Utilities/TimeAgo';
 
 const Chatbot = () => {
   let token = (localStorage.getItem('token'));
@@ -13,8 +14,9 @@ const Chatbot = () => {
   const [fullname, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const userlist = [{type: 'fullname',data: false},{type: 'email',data: false},
-    {type: 'password' ,data: false},{type: 'confirmation',data: false}];
+
+  const [userlist, setUserList] = useState([{type: 'fullname',data: false},{type: 'email',data: false},
+    {type: 'password' ,data: false},{type: 'confirmation',data: false}]);
 
   useEffect(()=>{
     setMessages([...messages, { sender: 'bot', text: 'Hi Dear, I am here to assist you!' }]);
@@ -22,73 +24,104 @@ const Chatbot = () => {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-    console.log(input);
     const userMessage = { sender: 'user', text: input };
     setMessages([...messages, userMessage]);
-    console.log(messages);
+
     try {
       let action = [];
       let message = userMessage.text.split(" ").map(item=>{
         return {name : item, status : false}
       });
-      const findContinues = messages.filter( item => item.sender == 'bot' && item.continue == true);
-      console.log(findContinues);
-      if(findContinues.length > 0){
-        console.log("enters length conditions");
+      const findContinues = messages && messages.filter( item => item.sender == 'bot' && item.continue == true);
+
+      if(findContinues.length > 0 && (messages[messages.length - 1].sender == 'bot' && messages[messages.length - 1].continue)){
         if(findContinues[0].text.toLowerCase().includes('user')){
-          console.log("enters includes conditions",userlist);
-          // let userlist = [{type: 'fullname',data: false},{type: 'email',data: false},
-          //   {type: 'password' ,data: false},{type: 'confirmation',data: false}];
-          // for(let message of findContinues){
-            for(let item of userlist){
-            // userlist.forEach((item,index) => {
-              console.log(item);
-              if(!item.data){
-                console.log(item, item.data);
-                setMessages([...messages,userMessage, { sender: 'bot', text: `Please enter ${item.type}`, continue : true}]);
-                // userlist[index].data = true;
-                item.data = true;
-                // userlist[userlist.findIndex(lst => lst.type === item.type)].data = true;
+            for(const index in userlist){
+
+              if(userlist[index].data == false){
+                new Promise(resolve=>{
+                  setMessages([...messages,userMessage, { sender: 'bot', text: `Please enter ${userlist[index].type}`, continue : true}]);
+                  resolve(true);
+                })
+                const updatedUserList = userlist.map((user, i) => 
+                  (i === Number(index)) ? { ...user, data: true } : user
+                );
+
+                setUserList(updatedUserList);
                 setInput('');
                 return 
               }
-              else{
-                if(item.type == 'fullname' && item.data == true){
+
+              if(findContinues[findContinues.length - 1].text.includes(userlist[index].type)){
+                if(userlist[index].type == 'fullname' && userlist[index].data == true && !fullname){
                   setFullName(userMessage.text);
-                  // userlist[0].data = true;
                   setInput('');
-                  return 
                 }
-                if(item.type == 'email' && item.data == true){
+                if(userlist[index].type == 'email' && userlist[index].data == true && !email){
                   setEmail(userMessage.text);
-                  // userlist[1].data = true;
                   setInput('');
-                  return 
                 }
-                if(item.type == 'password' && item.data == true){
+                if(userlist[index].type == 'password' && userlist[index].data == true && !password){
                   setPassword(userMessage.text);
-                  // userlist[2].data = true;
                   setInput('');
-                  return 
+                }
+                if(userlist[index].type == 'confirmation' && userlist[index].data == true ){
+                  if((userMessage.text == 'true' || userMessage.text == 'yes' || userMessage.text == 'ok' || userMessage.text == 'okay')){
+                    const userdata = {
+                      name : fullname,
+                      email : email,
+                      password : password,
+                      city : '',
+                      path : ''
+                    }
+                    const validatinguser = await validateExistingUser(userdata);
+                    if(validatinguser){
+                      setMessages([...messages,userMessage, { sender: 'bot', text: `Email Already exists` }]);
+                      setFullName('');
+                      setEmail('');
+                      setPassword('');
+                      setInput('');
+                      return 
+                    }
+                    const res = fetch('http://localhost:5000/users', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type" : 'application/json'
+                        },
+                        body: JSON.stringify(userdata)
+                    }).then(async ()=>{
+                      setMessages([...messages,userMessage, { sender: 'bot', text: `User got created` }]);
+                      setFullName('');
+                      setEmail('');
+                      setPassword('');
+                      setInput('');
+                      return 
+                    }).catch(error=>{
+                      setMessages([...messages,userMessage, { sender: 'bot', text: `Error while creating user` }]);
+                      setFullName('');
+                      setEmail('');
+                      setPassword('');
+                      setInput('');
+                      return 
+                    });
+                  }
+                  else if(userMessage.text.includes('no') || userMessage.text.includes('canc')){
+                    setMessages([...messages,userMessage, { sender: 'bot', text: `Cancelled creating user`, continue : false }]);
+                    setFullName('');
+                    setEmail('');
+                    setPassword('');
+                    setInput('');
+                    return 
+                  }
                 }
               }
-              // switch(item){
-              //   case 'fullname':
-              //     if(message.text.includes(item)){
-              //       setMessages([...messages,userMessage, { sender: 'bot', text: `Please enter ${item}`, continue : true}]);
-              //     }
-              //     setInput('');
-              //     return;
-              // }
             }
-            // );
-          // }
         }
         setInput('');
         return 
       }
       if(helpkeywords.find(item=> item == userMessage.text)){
-        setMessages([...messages,userMessage, { sender: 'bot', text: `I can help you to find bookings, food, restarants` }]);
+        setMessages([...messages,userMessage, { sender: 'bot', text: `I can help you to find bookings, food, restarants and Creating User` }]);
         setInput('');
         return 
       }
@@ -125,17 +158,13 @@ const Chatbot = () => {
           }
         });
       })
-      console.log(action);
       if(action.length == 0)
         setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, Not found anything.' }]);
       else{
-        console.log(action);
-        console.log(action[0].endpoint);
-        if(action[0].endpoint){
+        if(action && action[0] && action[0].endpoint){
           const req = await fetch(`http://localhost:5000/${action[0].endpoint}`);
           const res = await req.json();
           if(res.length > 0){
-            console.log(res);
             let checkingdatabase = [];
             message.forEach(m=>{
               res.forEach(item=>{
@@ -177,7 +206,6 @@ const Chatbot = () => {
             setMessages([...messages,userMessage, { sender: 'bot', text: `Data not available in ${action[0].name} Database` }]);
           }
         }else{
-          console.log('message', message);
           if(action[0].actiontype == 'new'){
             if(message.find(m=> m.name == 'user')){
               setMessages([...messages,userMessage, { sender: 'bot', text: 'Do you want to create a User?', continue : true  }]);
@@ -189,7 +217,6 @@ const Chatbot = () => {
       console.error('Error sending message:', error);
       setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, something went wrong.' }]);
     }
-    
     setInput('');
   };
 

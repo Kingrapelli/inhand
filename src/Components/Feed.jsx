@@ -213,7 +213,7 @@ function Feed(){
                         
                         <div >
                         {/* className='feedbox' */}
-                        <h5 style={{float:'left'}}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
+                        <h5 style={{float:'left'}} key={feedtype}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
                         <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
                             {feed && feed.map((item) => (
                                 <Card sx={{ minWidth: '100px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px 15px 5px 15px' }}>
