@@ -10,13 +10,13 @@ const RequestType = [
         actiontype : '',
         route : 'shopping',
         endpoint : 'products',
-        hashtags : 'buy, shirt, pant, shop '
+        hashtags : 'buy, shirt, pant, shop , mall, shop'
     },{
         name : 'food',
         actiontype : '',
         route : 'food',
         endpoint : 'restaurants',
-        hashtags : 'food, hungry, eat, restaurant, hotel'
+        hashtags : 'find, food, hungry, eat, restaurant, hotel'
     },{
         name : 'cancel',
         actiontype : 'cancel'

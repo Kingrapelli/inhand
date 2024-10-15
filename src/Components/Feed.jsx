@@ -207,7 +207,7 @@ function Feed(){
                 </ul>
             </div>
             {feed &&
-                <div className='container '>
+                <div className='container ' style={{overflowX : 'hidden', overflowY : 'auto'}}>
                 {/* <div className='container ' sx={{ flexGrow: 1, p: 3 }}> */}
                     <div className='feedmaindiv' style={{height: '100% !important'}}> 
                         

@@ -200,7 +200,7 @@ const Chatbot = () => {
                 setMessages([...messages,userMessage, { sender: 'bot', text: "Kindly search with location again" }]);
               }
             }else{
-              setMessages([...messages,userMessage, { sender: 'bot', text: `Sorry, Specific records not found in database. Please navigate to ${action[0].name}` }]);
+              setMessages([...messages,userMessage, { sender: 'bot', text: `Sorry, Specific records not found in database. Please navigate to ${action[0].route.toUpperCase()}` }]);
             }
           }else{
             setMessages([...messages,userMessage, { sender: 'bot', text: `Data not available in ${action[0].name} Database` }]);

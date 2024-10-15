@@ -75,12 +75,20 @@ const Header = () => {
     const [notifications , setNotification] = useState('');
     const [allUsers, setAllUsers] = useState();
     const [allFeed, setAllFeed] = useState();
+    const [allBookings, setAllBookings] = useState();
+    const [allRestaurants, setAllRestaurants] = useState();
+    // const [searchcontent, setSearchContent] = useState();
+    const [searchResult, setSearchResult] = useState();
     const navigate = useNavigate();
 
     useEffect(()=>{
         getAllUsers();
         getAllFeed();
-        getNotifications();
+        getAllBookings();
+        getAllRestaurants();
+        setInterval(() => {
+            getNotifications();
+        }, 2000);
     },[]);
 
     function handleLogout(){
@@ -111,6 +119,30 @@ const Header = () => {
         const res = await request.json();
         if(res.length > 0)
             setAllUsers(res);
+    }
+
+    const getAllBookings = async () => {
+        const request = await fetch(`http://localhost:5000/transport`,{
+            method: 'GET',
+            headers: {
+                "Content-Type" : 'application/json'
+            }
+        });
+        const res = await request.json();
+        if(res.length > 0)
+            setAllBookings(res);
+    }
+
+    const getAllRestaurants = async () => {
+        const request = await fetch(`http://localhost:5000/restaurants`,{
+            method: 'GET',
+            headers: {
+                "Content-Type" : 'application/json'
+            }
+        });
+        const res = await request.json();
+        if(res.length > 0)
+            setAllRestaurants(res);
     }
 
     const getAllFeed = async () => {
@@ -154,10 +186,12 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [notificationAnchorEl, setNotificationAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const [searchAnchorEl, setSearchAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const isNotificationOpen = Boolean(notificationAnchorEl);
+    const isSearchOpen = Boolean(searchAnchorEl);
 
 
     const handleProfileMenuOpen = (event) => {
@@ -166,12 +200,16 @@ const Header = () => {
 
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
+        setNotificationAnchorEl(null);
+        setSearchAnchorEl(null);
+        setAnchorEl(null)
     };
 
     const handleMenuClose = () => {
         setAnchorEl(null);
         handleMobileMenuClose();
         setNotificationAnchorEl();
+        setSearchAnchorEl(null);
     };
 
     const handleMobileMenuOpen = (event) => {
@@ -181,6 +219,78 @@ const Header = () => {
     const handleNotificationOpen = (event) => {
         setNotificationAnchorEl(event.currentTarget);
     };
+
+    const handleSearchOpen = (event) => {
+        setSearchAnchorEl(event);
+    };
+
+    const handleSearch = async (event) => {
+        const bookings = allBookings && allBookings.filter(item=>
+            item.name.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+        const restaurants = allRestaurants && allRestaurants.filter(item=>
+            item.name.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+        let data = [];
+        if(bookings && bookings.length)
+            data = data.concat(bookings);
+        if(restaurants && restaurants.length)
+            data = data.concat(restaurants);
+        return data;
+    }
+
+    const handleSearchChange = async (event) => {
+        if(!event.target.value){
+            setSearchResult(null);
+            return
+        }
+        const result = await handleSearch(event);
+        console.log(result);
+        if(result && result.length > 0)
+            setSearchResult(result);
+        else
+            setSearchResult(null);
+        setTimeout(() => {
+            handleSearchOpen(event.target);
+        }, 2000);
+    }
+
+    const searchId = 'primary-search-menu';
+    const renderSearch = (
+        <>{
+            user && <>
+                <Menu
+                    anchorEl={searchAnchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    id={searchId}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={isSearchOpen}
+                    onClose={handleMenuClose}
+                    >
+                    {(searchResult && searchResult.length) ? searchResult.map((item) => (
+                        <MenuItem key={item.id} >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            {item.name}
+                        </Typography>
+                        </MenuItem>
+                    )) : 
+                    <MenuItem key='emptysearch' >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            <small>No Items found</small>
+                        </Typography>
+                    </MenuItem>}
+                </Menu>
+            </>
+        }
+        </>
+    );
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -380,6 +490,8 @@ const Header = () => {
                         <StyledInputBase
                         placeholder="Search…"
                         inputProps={{ 'aria-label': 'search' }}
+                        onChange={handleSearchChange}
+                        // onChange={handleSearch}
                         />
                     </Search>
                     
@@ -430,6 +542,7 @@ const Header = () => {
         </AppBar>
         {renderMobileMenu}
         {renderMenu}
+        {renderSearch}
         {renderNotification}
         </Box>
     );
