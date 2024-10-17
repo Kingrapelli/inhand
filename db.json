@@ -139,7 +139,9 @@
       "postTitle": "About our freedom",
       "imagepath": "download1.jpg",
       "description": "we got our freedom in 1947 but still struggling to get freedom",
-      "likes": [],
+      "likes": [
+        "74e4"
+      ],
       "dislikes": []
     },
     {
@@ -164,7 +166,9 @@
       "likes": [
         "599f"
       ],
-      "dislikes": []
+      "dislikes": [
+        "74e4"
+      ]
     },
     {
       "id": "4567",

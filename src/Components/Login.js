@@ -48,6 +48,10 @@ function Login() {
     navigate('/signup')
   }
 
+  const resetPassword = () => {
+    navigate('/resetpassword')
+  }
+
   return (
     <>
       <div id="logindiv">
@@ -70,6 +74,7 @@ function Login() {
             required>
           </input>
           <button id='signin' type='button' onClick={handleSubmit}>SignIn</button>
+          <p>Forgot Password? <a onClick={resetPassword} style={{cursor:'pointer'}}>Reset</a></p>
           <p>Don't have an account? <a onClick={navigateToSignup} style={{cursor:'pointer'}}>SignUp</a></p>
         </form>
       </div>

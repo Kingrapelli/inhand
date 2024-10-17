@@ -56,7 +56,8 @@ export const validateExistingUser = async (user) => {
   const res = await request.json();
   if(res.length){
       const userpresence = res.find(data => data.email === user.email);
-      return userpresence ? true : false;
+      // return userpresence ? true : false;
+      return userpresence;
   }else{
       return false;
   }

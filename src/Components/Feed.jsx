@@ -26,6 +26,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import Header from './Header';
+import sendEmail from './Utilities/email';
 const moment = require('moment');
 const drawerWidth = 240;
 
@@ -75,7 +76,10 @@ function Feed(){
         }
         await updateFeed(item);
         await sendNotification(item,user.id, ActionType.Like);
+        await sendEmail(`${user.name} liked your post ${item.postTitle}`);
     }
+
+    
 
     const handleRemoveLike = async (item) => {
         item.likes.splice(item.likes.indexOf(user.id), 1);
@@ -90,6 +94,7 @@ function Feed(){
         }
         await updateFeed(item);
         await sendNotification(item,user.id, ActionType.Dislike);
+        await sendEmail(user, `${user.name} disliked your post ${item.postTitle}`);
     }
 
     const handleRemoveDisLike = async (item) => {

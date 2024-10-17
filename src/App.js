@@ -16,6 +16,7 @@ import Settings from './Components/Settings';
 import Todos from './Components/Todos';
 import LoginNew from './Components/LoginNew';
 import KAI from './Components/KAI';
+import ResetPassword from './Components/ResetPassword';
 // import { browserHistory, Router, Route  } from 'react-router';
 const { default: jwt_decode } = require("jwt-decode");
 
@@ -31,8 +32,11 @@ function App() {
     <>
         <Header></Header>
         <Routes >
+          
           <Route path='/login' element={ !token ? < Login /> : <Navigate to = "/" />} />
           <Route path='/signup' element={ !token ? < Signup /> : <Navigate to = "/" />} />
+          <Route path='/resetpassword' element={!token ? < ResetPassword /> : <Navigate to="/"/>} />
+
           <Route path='/home' element={token ? < Home /> : <Navigate to="/login"/>} />
           <Route path='' element={token ? < Home /> : <Navigate to="/login"/>} />
           <Route path='/bookings' element={token ? < BookingMain /> : <Navigate to="/login"/>} />
