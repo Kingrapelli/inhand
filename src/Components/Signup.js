@@ -76,7 +76,7 @@ function Signup(){
     return (
         <>
             <div id='logindiv'>
-                <form >
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                     <img src='adduser.jpg' alt='' height={120} width={120}></img>
                     <input
                         type='text'
@@ -115,7 +115,7 @@ function Signup(){
                         onChange={(e) => setPassword(e.target.value)}
                     /> */}
                     {/* <input type="file" name='path' onChange={onImageChange} className="filetype" required /> */}
-                    <button id='signin' type='button' onClick={handleSubmit}>SignUp</button>
+                    <button id='signin' type='submit'>SignUp</button>
                     <p>Already have an account? <a onClick={NavigateToLogin} style={{cursor:'pointer'}}>Login</a></p>
                 </form>
             </div>

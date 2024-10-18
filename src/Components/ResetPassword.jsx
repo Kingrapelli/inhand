@@ -12,10 +12,11 @@ const ResetPassword = () => {
     const [actualotp, setActualOtp] = useState();
     const [isEmailValidated, setisEmailValidated] = useState(false);
     const [isOTPsent, setisOTPsent] = useState(false);
-    const [newPassword, setNewPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [user, setUser] = useState();
     const navigate = useNavigate();
+    const [isdisabled, setIsDisabled] = useState(false);
 
     useEffect(()=>{
 
@@ -23,6 +24,7 @@ const ResetPassword = () => {
 
     const handleGetOTP = async () => {
         try{
+            // setIsDisabled(true);
             const userdata = {
                 name : '',
                 email : email,
@@ -43,12 +45,15 @@ const ResetPassword = () => {
             }else{
                 alert("User not exists")
             }
+            // setIsDisabled(false);
         }catch(err){
+            // setIsDisabled(false);
             console.log(err);
         }
     }
 
     const handleValidateOTP = async () => {
+        // setIsDisabled(true);
         if(!otp || otp.length != 4)
             return
         if(otp == actualotp){
@@ -57,11 +62,17 @@ const ResetPassword = () => {
         }else{
             alert("Invalid OTP")
         }
+        // setIsDisabled(false);
     }
 
     const handleSubmit = async () => {
+        // setIsDisabled(true);
         if(newPassword != confirmPassword){
             alert("Passwords are not matching")
+            return;
+        }
+        if(user.password == newPassword){
+            alert("Your password is same with old password")
             return;
         }
         try{
@@ -76,6 +87,7 @@ const ResetPassword = () => {
         }catch(err){
             console.log(err);
         }
+        // setIsDisabled(false);
     }
 
     return (
@@ -85,49 +97,62 @@ const ResetPassword = () => {
                 {
                     !isEmailValidated ? 
                     <>
-                        <input 
-                            type='email'
-                            name='email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder='Email'
-                            required>
-                        </input>
-                        {isOTPsent && 
-                            <>
-                                <input 
-                                    type='otp'
-                                    name='otp'
-                                    value={otp}
-                                    onChange={(e) => setOTP(e.target.value)}
-                                    placeholder='OTP'
-                                    maxLength={4}
-                                    minLength={4}
-                                    required>
-                                </input>
-                                <button id='signin' type='button' onClick={handleValidateOTP}>Validate OTP</button>
-                            </>
-                        }
-                        { !isOTPsent && <button id='signin' type='button' onClick={handleGetOTP}>Get OTP</button>}
+                        <form action="" onSubmit={(e) => { 
+                            e.preventDefault(); 
+                            if(isOTPsent)
+                                handleValidateOTP();
+                            else
+                                handleGetOTP();
+                            }}>
+
+                            <input 
+                                type='email'
+                                name='email'
+                                value={email}
+                                onChange={(e) =>{ setEmail(e.target.value);}}
+                                placeholder='Email'
+                                required>
+                            </input>
+                            {isOTPsent && 
+                                <>
+                                    <input 
+                                        type='otp'
+                                        name='otp'
+                                        value={otp}
+                                        onChange={(e) => setOTP(e.target.value)}
+                                        placeholder='OTP'
+                                        maxLength={4}
+                                        minLength={4}
+                                        required>
+                                    </input>
+                                    <button id='signin' type='submit' disabled={isdisabled} >Validate OTP</button>
+                                </>
+                            }
+                            { !isOTPsent && <button id='signin' type='submit' disabled={isdisabled}>Get OTP</button>}
+                        </form>
                     </> :
                     <>
-                        <input 
-                            type='newpassword'
-                            name='password'
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            placeholder='New Password'
-                            required>
-                        </input>
-                        <input 
-                            type='confirmpassword'
-                            name='password'
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder='Confirm Password'
-                            required>
-                        </input>
-                        <button id='signin' type='button' onClick={handleSubmit}>Submit</button>
+                        <form action="" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+                            <input 
+                                type='password'
+                                name='newpassword'
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder='New Password'
+                                autoComplete="off"
+                                required>
+                            </input>
+                            <input 
+                                type='password'
+                                name='confirmpassword'
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder='Confirm Password'
+                                autoComplete="off"
+                                required>
+                            </input>
+                            <button id='signin' type='submit' disabled={isdisabled}>Submit</button>
+                        </form>
                     </>
                 }
             </div>

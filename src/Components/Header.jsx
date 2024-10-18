@@ -491,7 +491,9 @@ const Header = () => {
                         placeholder="Search…"
                         inputProps={{ 'aria-label': 'search' }}
                         onChange={handleSearchChange}
+                        key='searchcontent'
                         // onChange={handleSearch}
+                        // value={searchcontent}
                         />
                     </Search>
                     

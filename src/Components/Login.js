@@ -55,7 +55,7 @@ function Login() {
   return (
     <>
       <div id="logindiv">
-        <form >
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           <img src='loginuser.png' alt='' height={150} width={150}></img>
           <input 
             type='email'
@@ -73,7 +73,7 @@ function Login() {
             placeholder='Password'
             required>
           </input>
-          <button id='signin' type='button' onClick={handleSubmit}>SignIn</button>
+          <button id='signin' type='submit'>SignIn</button>
           <p>Forgot Password? <a onClick={resetPassword} style={{cursor:'pointer'}}>Reset</a></p>
           <p>Don't have an account? <a onClick={navigateToSignup} style={{cursor:'pointer'}}>SignUp</a></p>
         </form>

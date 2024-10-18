@@ -29,26 +29,34 @@
       "password": "navneeth",
       "city": "",
       "path": ""
+    },
+    {
+      "id": "0a84",
+      "name": "srikanth",
+      "email": "srisad95@gmail.com",
+      "password": "srikanth",
+      "city": "",
+      "path": ""
     }
   ],
   "notifications": [
     {
-      "id": "a7f9",
-      "actiontype": 8001,
-      "notificationtype": 7001,
-      "itemId": "3456",
-      "owner": "74e4",
-      "actionby": "599f",
-      "updatedon": "2024-09-30T04:31:21.717Z"
-    },
-    {
-      "id": "5850",
+      "id": "3244",
       "actiontype": 8001,
       "notificationtype": 7001,
       "itemId": "3456",
       "owner": "74e4",
       "actionby": "74e4",
-      "updatedon": "2024-09-30T15:43:27.383Z"
+      "updatedon": "2024-10-17T16:36:18.894Z"
+    },
+    {
+      "id": "de2b",
+      "actiontype": 8002,
+      "notificationtype": 7001,
+      "itemId": "3456",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-10-17T16:36:38.494Z"
     }
   ],
   "products": [],

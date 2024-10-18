@@ -234,13 +234,15 @@ const Chatbot = () => {
           </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message..."
-      />
-      <button onClick={sendMessage}>Send</button>
+      <form action="" onSubmit={(e) => { e.preventDefault(); sendMessage(); }}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message..."
+        />
+        <button href="#" style={{borderRadius: '10px',background:'#1976d2', color:'white', border:'white'}} type='submit' >Send</button>
+      </form>
     </div>
   );
 };
