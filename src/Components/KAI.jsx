@@ -27,7 +27,7 @@ const KAI = () => {
 
     return (
         <>
-            <div>
+            <div style={{position:'absolute'}}>
                 {/* Floating Button */}
                 <div className="floating-icon" onClick={togglePopup}>
                     💬

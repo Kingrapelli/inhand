@@ -25,10 +25,41 @@ import { styled, alpha } from '@mui/material/styles';
 import moment from 'moment';
 import { ActionType } from './Enums/ActionType';
 import { timeAgo } from './Utilities/TimeAgo';
+import { Drawer, List, ListItem, ListItemText } from '@mui/material';
+import './SideMenu.css';
+import { DBJSON_URL } from '../Services/auth';
 
 const pages = ['Home','Bookings','Shopping','Food'];
 const settings = ['Profile', 'Dashboard','Settings', 'Logout'];
 
+const menuData = [
+    {
+        title: 'Dashboard',
+        subItems: []
+    },
+    {
+        title: 'Settings',
+        subItems: [
+            { title: 'Profile' },
+            { title: 'Account' },
+            { title: 'Privacy' }
+        ]
+    },
+    {
+        title: 'Reports',
+        subItems: [
+            { title: 'Daily Report' },
+            { title: 'Monthly Report' }
+        ]
+    },
+    {
+        title: 'Help',
+        subItems: [
+            { title: 'FAQ' },
+            { title: 'Contact Support' }
+        ]
+    }
+];
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -79,6 +110,9 @@ const Header = () => {
     const [allRestaurants, setAllRestaurants] = useState();
     // const [searchcontent, setSearchContent] = useState();
     const [searchResult, setSearchResult] = useState();
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openIndex, setOpenIndex] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -91,6 +125,45 @@ const Header = () => {
         }, 2000);
     },[]);
 
+    const handleToggle = (index) => {
+        setOpenIndex(openIndex === index ? null : index);
+    };
+
+    const toggleDrawer = (open) => () => {
+        setOpenDrawer(open);
+    };
+
+    const drawer = (
+        <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            // onClick={toggleDrawer(false)}
+            // onKeyDown={toggleDrawer(false)}
+        >
+            <List>
+                {menuData.map((item, index) => (
+                    <ListItem button key={index} onClick={() => handleToggle(index)}>
+                        <ListItemText primary={item.title} />
+                        {item.subItems.length > 0 && (
+                            <span className={`dropdown-icon ${openIndex === index ? 'open' : ''}`}>
+                                {openIndex === index ? '▲' : '▼'}
+                            </span>
+                        )}
+                        {item.subItems.length > 0 && openIndex === index && (
+                            <List component="div" disablePadding>
+                                {item.subItems.map((subItem, subIndex) => (
+                                    <ListItem button key={subIndex} sx={{ pl: 4 }}>
+                                        <ListItemText primary={subItem.title} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        )}
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
+
     function handleLogout(){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -98,7 +171,7 @@ const Header = () => {
     }
 
     const getNotifications = async () => {
-        const req = await fetch('http://localhost:5000/notifications');
+        const req = await fetch(`${DBJSON_URL}/notifications`);
         const res = await req.json();
         if(res.length > 0 && user) {
             let result = res.filter(item => {return item.owner == user.id;});
@@ -110,7 +183,7 @@ const Header = () => {
     }
 
     const getAllUsers = async () => {
-        const request = await fetch(`http://localhost:5000/users`,{
+        const request = await fetch(`${DBJSON_URL}/users`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -122,7 +195,7 @@ const Header = () => {
     }
 
     const getAllBookings = async () => {
-        const request = await fetch(`http://localhost:5000/transport`,{
+        const request = await fetch(`${DBJSON_URL}/transport`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -134,7 +207,7 @@ const Header = () => {
     }
 
     const getAllRestaurants = async () => {
-        const request = await fetch(`http://localhost:5000/restaurants`,{
+        const request = await fetch(`${DBJSON_URL}/restaurants`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -146,7 +219,7 @@ const Header = () => {
     }
 
     const getAllFeed = async () => {
-        const request = await fetch(`http://localhost:5000/feed`,{
+        const request = await fetch(`${DBJSON_URL}/feed`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -448,105 +521,115 @@ const Header = () => {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }} style={{position:'relative'}}>
-        <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-            <Toolbar>
-            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Typography
-                variant="h6"
-                noWrap
-                component={Link}
-                to={'/'}
-                sx={{
-                    mr: 2,
-                    display: { xs: 'none', md: 'flex' },
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    letterSpacing: '.3rem',
-                    color: 'inherit',
-                    textDecoration: 'none',
-                }}
-            >
-                INHAND
-            </Typography>
-            {
-                user && <>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                component={Link}
-                                to={`/${page.toLowerCase()}`}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
-                    <Search>
-                        <SearchIconWrapper>
-                        <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                        placeholder="Search…"
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={handleSearchChange}
-                        key='searchcontent'
-                        // onChange={handleSearch}
-                        // value={searchcontent}
-                        />
-                    </Search>
-                    
-                    {/* <Box sx={{ flexGrow: 1 }} /> */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={4} color="error">
-                            <MailIcon />
-                        </Badge>
+        <>
+            {/* <Box sx={{ flexGrow: 1 }} style={{position:'static'}}> */}
+            {/* style={{position:'relative', top:'0px', marginTop:'0px !important'}} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} */}
+                <AppBar 
+                    sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    style={{position:'static', marginTop:'0px !important'}}
+                >
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+                            <MenuIcon />
                         </IconButton>
-                        <IconButton onClick={handleNotificationOpen}
-                        size="large"
-                        aria-label="show 17 new notifications"
-                        color="inherit"
+                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component={Link}
+                            to={'/'}
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
                         >
+                            INHAND
+                        </Typography>
                         {
-                            notifications && notifications.length ?
-                            <>
-                                <Badge badgeContent={notifications && notifications.length} color="error">
-                                    <NotificationsIcon />
-                                </Badge>
-                            </> : <>
-                                <Badge color="error">
-                                    <NotificationsIcon />
-                                </Badge>
+                            user && <>
+                                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                                    {pages.map((page) => (
+                                        <Button
+                                            key={page}
+                                            component={Link}
+                                            to={`/${page.toLowerCase()}`}
+                                            sx={{ my: 2, color: 'white', display: 'block' }}
+                                        >
+                                            {page}
+                                        </Button>
+                                    ))}
+                                </Box>
+                                <Search>
+                                    <SearchIconWrapper>
+                                    <SearchIcon />
+                                    </SearchIconWrapper>
+                                    <StyledInputBase
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={handleSearchChange}
+                                    key='searchcontent'
+                                    // onChange={handleSearch}
+                                    // value={searchcontent}
+                                    />
+                                </Search>
+                                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                                    <Badge badgeContent={4} color="error">
+                                        <MailIcon />
+                                    </Badge>
+                                    </IconButton>
+                                    <IconButton onClick={handleNotificationOpen}
+                                    size="large"
+                                    aria-label="show 17 new notifications"
+                                    color="inherit"
+                                    >
+                                    {
+                                        notifications && notifications.length ?
+                                        <>
+                                            <Badge badgeContent={notifications && notifications.length} color="error">
+                                                <NotificationsIcon />
+                                            </Badge>
+                                        </> : <>
+                                            <Badge color="error">
+                                                <NotificationsIcon />
+                                            </Badge>
+                                        </>
+                                    }
+                                    </IconButton>
+                                    <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }} style={{marginLeft:'10px'}}>
+                                        <Avatar alt="Remy Sharp" src={user.image || '/userprofiles/defaultpicture.png'} />
+                                    </IconButton>
+                                </Box>
+                                <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                                    <IconButton
+                                    size="large"
+                                    aria-label="show more"
+                                    aria-controls={mobileMenuId}
+                                    aria-haspopup="true"
+                                    onClick={handleMobileMenuOpen}
+                                    color="inherit"
+                                    >
+                                    <MoreIcon />
+                                    </IconButton>
+                                </Box>
                             </>
                         }
-                        </IconButton>
-                        <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }} style={{marginLeft:'10px'}}>
-                            <Avatar alt="Remy Sharp" src={user.image || '/userprofiles/defaultpicture.png'} />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                        size="large"
-                        aria-label="show more"
-                        aria-controls={mobileMenuId}
-                        aria-haspopup="true"
-                        onClick={handleMobileMenuOpen}
-                        color="inherit"
-                        >
-                        <MoreIcon />
-                        </IconButton>
-                    </Box>
-                </>
-            }
-            </Toolbar>
-        </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
-        {renderSearch}
-        {renderNotification}
-        </Box>
+                    </Toolbar>
+                </AppBar>
+                <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer(false)}>
+                    {drawer}
+                </Drawer>
+                {renderMobileMenu}
+                {renderMenu}
+                {renderSearch}
+                {renderNotification}
+            {/* </Box> */}
+        </>
     );
 }
 

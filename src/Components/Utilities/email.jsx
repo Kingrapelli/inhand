@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_URL } from '../../Services/auth';
 
-const sendEmail = async (user, message) => {
+const sendEmail = async (user, message, endpoint) => {
     try {
-      const response = await axios.post('http://localhost:4000/send-email', {
+      const response = await axios.post(`${API_URL}/${endpoint}`, {
         name: user ? user.name : '',
         email: typeof user == 'object' ? user.email : (user || ''),
         message: message

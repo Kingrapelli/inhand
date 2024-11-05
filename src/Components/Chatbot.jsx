@@ -3,6 +3,7 @@ import axios from 'axios';
 import RequestType from './Enums/RequestType';
 import Locations from './Enums/LocationEnum';
 import { validateExistingUser } from './Utilities/TimeAgo';
+import { DBJSON_URL } from '../Services/auth';
 
 const Chatbot = () => {
   let token = (localStorage.getItem('token'));
@@ -83,7 +84,7 @@ const Chatbot = () => {
                       setInput('');
                       return 
                     }
-                    const res = fetch('http://localhost:5000/users', {
+                    const res = fetch(`${DBJSON_URL}/users`, {
                         method: 'POST',
                         headers: {
                             "Content-Type" : 'application/json'
@@ -162,7 +163,7 @@ const Chatbot = () => {
         setMessages([...messages,userMessage, { sender: 'bot', text: 'Sorry, Not found anything.' }]);
       else{
         if(action && action[0] && action[0].endpoint){
-          const req = await fetch(`http://localhost:5000/${action[0].endpoint}`);
+          const req = await fetch(`${DBJSON_URL}/${action[0].endpoint}`);
           const res = await req.json();
           if(res.length > 0){
             let checkingdatabase = [];

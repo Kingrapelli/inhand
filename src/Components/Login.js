@@ -18,7 +18,7 @@ function Login() {
       alert("Fields are mandatory");
       return 
     }
-    const request = await fetch(`http://localhost:5000/users?email=${email}&password=${password}`);
+    const request = await fetch(`${DBJSON_URL}/users?email=${email}&password=${password}`);
     const responce = await request.json();
     if(responce.length >0){
       let token = Math.random().toString(36).slice(2);

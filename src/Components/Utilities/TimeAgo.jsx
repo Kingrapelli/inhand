@@ -1,6 +1,9 @@
 // export const timeAgo = (timestamp) => {
 //     const now = new Date();
 //     const secondsPast = Math.floor((now - new Date(timestamp)) / 1000);
+
+import { DBJSON_URL } from "../../Services/auth";
+
   
 //     if (secondsPast < 60) {
 //       return 'Just now';
@@ -47,7 +50,7 @@ export function timeAgo(date) {
 }
 
 export const validateExistingUser = async (user) => {
-  const request = await fetch(`http://localhost:5000/users`,{
+  const request = await fetch(`${DBJSON_URL}/users`,{
       method: 'GET',
       headers: {
           "Content-Type" : 'application/json'

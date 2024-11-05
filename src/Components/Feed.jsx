@@ -10,23 +10,9 @@ import TypeOfFeed from './Enums/TypeOfFeed';
 import { NotificationType } from './Enums/NotificationType';
 import { Message } from './Enums/ErrorMessages';
 import { ActionType } from './Enums/ActionType';
-import { testing } from '../Services/auth';
-import KAI from './KAI';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import AppBar from '@mui/material/AppBar';
-import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import Header from './Header';
+import { DBJSON_URL, testing } from '../Services/auth';
 import sendEmail from './Utilities/email';
+import SideMenu from './SideMenu';
 const moment = require('moment');
 const drawerWidth = 240;
 
@@ -45,7 +31,7 @@ function Feed(){
         if(e && e.target && e.target.value){
             setFeedType(e.target.value)
         }
-        const req = await fetch(`http://localhost:5000/feed`,{
+        const req = await fetch(`${DBJSON_URL}/feed`,{
             method: 'GET',
             headers: {
                 'Content-Type' : 'application/json'
@@ -76,7 +62,7 @@ function Feed(){
         }
         await updateFeed(item);
         await sendNotification(item,user.id, ActionType.Like);
-        await sendEmail(`${user.name} liked your post ${item.postTitle}`);
+        await sendEmail(user, `${user.name} liked your post ${item.postTitle}`, 'feedactivity');
     }
 
     
@@ -94,7 +80,7 @@ function Feed(){
         }
         await updateFeed(item);
         await sendNotification(item,user.id, ActionType.Dislike);
-        await sendEmail(user, `${user.name} disliked your post ${item.postTitle}`);
+        await sendEmail(user, `${user.name} disliked your post ${item.postTitle}`, 'feedactivity');
     }
 
     const handleRemoveDisLike = async (item) => {
@@ -105,7 +91,7 @@ function Feed(){
     const updateFeed = async (item) => {
         try{
             axios
-            .put(`http://localhost:5000/feed/${item.id}`, item)
+            .put(`${DBJSON_URL}/feed/${item.id}`, item)
             .then((response) => {
                 getFeed();
             })
@@ -118,7 +104,7 @@ function Feed(){
     }
 
     const getAllUsers = async () => {
-        const request = await fetch(`http://localhost:5000/users`,{
+        const request = await fetch(`${DBJSON_URL}/users`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -143,7 +129,7 @@ function Feed(){
             actionby : userid,
             updatedon : new Date()
         }
-        const req = await fetch('http://localhost:5000/notifications',{
+        const req = await fetch(`${DBJSON_URL}/notifications`,{
             method:'POST',
             headers:{
                 'Content-Type' : 'application/json'
@@ -166,7 +152,7 @@ function Feed(){
     }
 
     return (
-        <>
+        < >
             {/* <Drawer
                 variant="permanent"
                 sx={{
@@ -204,69 +190,75 @@ function Feed(){
                     </List>
                 </Box>
             </Drawer> */}
-            <div className='container leftboardermenu' >
+            {/* <div className='container leftboardermenu' >
                 <ul>
                     {TypeOfFeed && TypeOfFeed.map((item,index)=>{
                         return <li key={item.value} value={item.value} onClick={getFeed}>{item.name}</li>
                     })}
                 </ul>
-            </div>
-            {feed &&
-                <div className='container ' style={{overflowX : 'hidden', overflowY : 'auto'}}>
-                {/* <div className='container ' sx={{ flexGrow: 1, p: 3 }}> */}
-                    <div className='feedmaindiv' style={{height: '100% !important'}}> 
-                        
-                        <div >
-                        {/* className='feedbox' */}
-                        <h5 style={{float:'left'}} key={feedtype}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
-                        <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
-                            {feed && feed.map((item) => (
-                                <Card sx={{ minWidth: '100px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px 15px 5px 15px' }}>
-                                    <CardMedia
-                                        component="img"
-                                        height="200"
-                                        image={item.imagepath}
-                                        alt="Placeholder image"
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {/* <img src={item.image} height={30} width={30}/>{item.postTitle}  */}
-                                            <span style={{float:'left'}}>
-                                                <img src={getUserDataByUserId(item.postedby).image || '/userprofiles/defaultpicture.png'} height={30} width={30} style={{borderRadius:'20px'}} />
-                                                <small style={{fontSize:'medium'}}> {getUserDataByUserId(item.postedby).name}</small>
-                                            </span>
-                                            <small style={{fontSize:'medium'}}>- {item.postTitle}</small>
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {item.description}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        { getUserIdFromLikes(item.likes) 
-                                            ?   <IconButton onClick={()=>handleRemoveLike(item)} >
-                                                    <ThumbUpIcon style={{cursor:'pointer'}}/>
-                                                </IconButton>
-                                            :   <IconButton onClick={()=>handleLike(item)} >
-                                                    <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
-                                                </IconButton> }{item.likes.length}
-                                        {getUserIdFromLikes(item.dislikes) 
-                                            ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
-                                                    <ThumbDownAltIcon style={{cursor:'pointer'}}/>
-                                                </IconButton> 
-                                            :   <IconButton onClick={()=> handleDisLike(item)} >
-                                                    <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
-                                                </IconButton> }{item.dislikes.length}
-                                        <Button style={{fontSize:'10px'}} size="small">Share</Button>
-                                        <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
-                                        <small style={{fontSize:'10px'}}>Posted on : {moment(item.postedon).format('MMMM Do, YYYY, h:mm:ss A')}</small>
-                                    </CardActions>
-                                </Card>
-                            ))}
-                            </Grid>
+            </div> */}
+            <div style={{ display: 'flex', overflowY:'auto' , width: '100% !important'}}>
+                {/* <SideMenu /> */}
+                <div style={{ flexGrow: 1 }}>
+                {user && feed &&
+                    <div className='container ' style={{overflowX : 'hidden', overflowY : 'auto'}}>
+                    {/* <div className='container ' sx={{ flexGrow: 1, p: 3 }}> */}
+                        <div className='' style={{height: '100% !important'}}> 
+                            
+                            <div >
+                            {/* className='feedbox' */}
+                            <h5 style={{float:'left'}}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
+                            <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
+                                {feed && feed.map((item) => (
+                                    <Card sx={{ minWidth: '100px !important' ,maxWidth: '600px !important',width: '400px' , margin:'5px 15px 5px 15px' }}>
+                                        <CardMedia
+                                            component="img"
+                                            height="200"
+                                            image={item.imagepath}
+                                            alt="Placeholder image"
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                {/* <img src={item.image} height={30} width={30}/>{item.postTitle}  */}
+                                                <span style={{float:'left'}}>
+                                                    <img src={getUserDataByUserId(item.postedby).image || '/userprofiles/defaultpicture.png'} height={30} width={30} style={{borderRadius:'20px'}} />
+                                                    <small style={{fontSize:'medium'}}> {getUserDataByUserId(item.postedby).name}</small>
+                                                </span>
+                                                <small style={{fontSize:'medium'}}>- {item.postTitle}</small>
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {item.description}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            { getUserIdFromLikes(item.likes) 
+                                                ?   <IconButton onClick={()=>handleRemoveLike(item)} >
+                                                        <ThumbUpIcon style={{cursor:'pointer'}}/>
+                                                    </IconButton>
+                                                :   <IconButton onClick={()=>handleLike(item)} >
+                                                        <ThumbUpOutlinedIcon style={{cursor:'pointer'}}/>
+                                                    </IconButton> }{item.likes.length}
+                                            {getUserIdFromLikes(item.dislikes) 
+                                                ?   <IconButton onClick={()=> handleRemoveDisLike(item)} >
+                                                        <ThumbDownAltIcon style={{cursor:'pointer'}}/>
+                                                    </IconButton> 
+                                                :   <IconButton onClick={()=> handleDisLike(item)} >
+                                                        <ThumbDownAltOutlinedIcon style={{cursor:'pointer'}}/>
+                                                    </IconButton> }{item.dislikes.length}
+                                            <Button style={{fontSize:'10px'}} size="small">Share</Button>
+                                            <Button style={{fontSize:'10px'}} size="small">Learn More</Button>
+                                            <small style={{fontSize:'10px'}}>Posted on : {moment(item.postedon).format('MMMM Do, YYYY, h:mm:ss A')}</small>
+                                        </CardActions>
+                                    </Card>
+                                ))}
+                                </Grid>
+                            </div>
                         </div>
                     </div>
+                }
                 </div>
-            }
+            </div>
+            
         </>
     )
 }

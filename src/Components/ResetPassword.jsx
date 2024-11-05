@@ -36,7 +36,7 @@ const ResetPassword = () => {
             if(validatinguser){
                 setUser(validatinguser);
                 const otp = Math.floor(Math.random() * 9999 + 1000);
-                await sendEmail(email, `Otp to reset your password is : ${otp}`).then(res=>{
+                await sendEmail(validatinguser, `Otp to reset your password is : ${otp}`, 'otprequest').then(res=>{
                     setActualOtp(otp);
                     setisOTPsent(true);
                 }).catch(err=>{
@@ -77,7 +77,7 @@ const ResetPassword = () => {
         }
         try{
             user.password = newPassword;
-            const response = await axios.put(`http://localhost:5000/users/${user.id}`, user);
+            const response = await axios.put(`${DBJSON_URL}/users/${user.id}`, user);
             if(response){
                 alert("Password got updated");
                 navigate('/login');

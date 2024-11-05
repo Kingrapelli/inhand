@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Bookings from '../Enums/BookingEnum';
 import Locations from '../Enums/LocationEnum';
+import { DBJSON_URL } from '../../Services/auth';
 // import Bookings from '../Enums/Booking'
 
 function NewBooking(){
@@ -28,7 +29,7 @@ function NewBooking(){
     }
 
     const handleSubmit = async () => {
-        const req =  await fetch('http://localhost:5000/transport',{
+        const req =  await fetch(`${DBJSON_URL}/transport`,{
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json'

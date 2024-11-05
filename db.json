@@ -4,7 +4,7 @@
       "id": "74e4",
       "name": "Naveen Kumar Rapelli",
       "email": "kingrapelli@gmail.com",
-      "password": "Naveen",
+      "password": "naveen",
       "image": "Photo.jpg"
     },
     {
@@ -172,11 +172,10 @@
       "imagepath": "download.jpg",
       "description": "we got our freedom in 1947 but still struggling to get motiviated",
       "likes": [
-        "599f"
-      ],
-      "dislikes": [
+        "599f",
         "74e4"
-      ]
+      ],
+      "dislikes": []
     },
     {
       "id": "4567",

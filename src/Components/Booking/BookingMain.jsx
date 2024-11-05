@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, Grid } from '@mui/material';
 import Bookings from '../Enums/BookingEnum';
 import Locations from '../Enums/LocationEnum';
+import { DBJSON_URL } from '../../Services/auth';
 
 function BookingMain(){
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ function BookingMain(){
 
     const handleRequest = async (e) => {
         
-        const req = await fetch(`http://localhost:5000/transport`,{
+        const req = await fetch(`${DBJSON_URL}/transport`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -61,16 +62,16 @@ function BookingMain(){
 
     return (
         < >
-            <div className='container leftboardermenu' >
+            {/* <div className='container leftboardermenu' >
                 <ul>
                     {Bookings && Bookings.map((item,index)=>{
                         return <li key={item.value} onClick={handleRequest} value={item.value}>{item.name}</li>
                     })}
                 </ul>
-            </div>
-            <div style={{ 'marginLeft': '160px',overflowY:'auto' }}>
+            </div> */}
+            <div style={{ overflowY:'auto' }}>
                 <div style={{ border: '0px solid', borderRadius: '10px', width: 'auto !important',
-                     height: '100%', margin: "20px", padding: '20px',overflowY:'auto' }}>
+                     height: '100%', margin: "20px", padding: '0px',overflowY:'auto' }}>
                     
                     <h5 style={{float:'left'}}>- Bookings / {getMasterDataById(bookingtype,'bookingtype')}</h5>
                     <Link to="/bookings/new">

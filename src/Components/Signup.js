@@ -1,7 +1,7 @@
 import React from 'react';
 import { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { register } from '../Services/auth';
+import { DBJSON_URL, register } from '../Services/auth';
 import { validateExistingUser } from './Utilities/TimeAgo';
 
 function Signup(){
@@ -46,7 +46,7 @@ function Signup(){
             alert("Email already exists")
             return 
         }
-        const res = fetch('http://localhost:5000/users', {
+        const res = fetch(`${DBJSON_URL}/users`, {
             method: 'POST',
             headers: {
                 "Content-Type" : 'application/json'

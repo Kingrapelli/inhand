@@ -133,7 +133,9 @@ input,select {
   /* overflow: auto; */
   position: absolute;
   left: 0;
-  height: 700px !important;
+  height: 100vh; /* Full height */
+
+  /* height: 700px !important; */
   background-color: #1976d2;
   display: flex;
 }
