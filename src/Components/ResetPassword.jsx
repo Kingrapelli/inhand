@@ -4,6 +4,7 @@ import { Message } from './Enums/ErrorMessages';
 import sendEmail from './Utilities/email';
 import { validateExistingUser } from './Utilities/TimeAgo';
 import axios from 'axios';
+import { DBJSON_URL } from '../Services/auth';
 
 
 const ResetPassword = () => {
@@ -90,6 +91,10 @@ const ResetPassword = () => {
         // setIsDisabled(false);
     }
 
+    function NavigateToLogin () {
+        navigate('/login');
+    }
+
     return (
         <>
             <div id='logindiv'>
@@ -155,6 +160,7 @@ const ResetPassword = () => {
                         </form>
                     </>
                 }
+                <p>Back to <a onClick={NavigateToLogin} style={{cursor:'pointer'}}>Login</a></p>
             </div>
         </>
     )

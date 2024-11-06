@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, IconButton } from '@mui/material';
+import { Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, IconButton, Drawer, Box, List, ListItem, ListItemText } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
@@ -12,14 +12,45 @@ import { Message } from './Enums/ErrorMessages';
 import { ActionType } from './Enums/ActionType';
 import { DBJSON_URL, testing } from '../Services/auth';
 import sendEmail from './Utilities/email';
-import SideMenu from './SideMenu';
+import MenuIcon from '@mui/icons-material/Menu';
 const moment = require('moment');
 const drawerWidth = 240;
 
-function Feed(){
+const menuData = [
+    {
+        title: 'Dashboard',
+        subItems: []
+    },
+    {
+        title: 'Settings',
+        subItems: [
+            { title: 'Profile' },
+            { title: 'Account' },
+            { title: 'Privacy' }
+        ]
+    },
+    {
+        title: 'Reports',
+        subItems: [
+            { title: 'Daily Report' },
+            { title: 'Monthly Report' }
+        ]
+    },
+    {
+        title: 'Help',
+        subItems: [
+            { title: 'FAQ' },
+            { title: 'Contact Support' }
+        ]
+    }
+];
+
+const Feed = () => {
     const [allUsers, setAllUsers] = useState();
     const [feedtype , setFeedType] = useState(6001);
     const [feed, setFeed] = useState('');
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openIndex, setOpenIndex] = useState(null);
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(()=>{
@@ -63,9 +94,7 @@ function Feed(){
         await updateFeed(item);
         await sendNotification(item,user.id, ActionType.Like);
         await sendEmail(user, `${user.name} liked your post ${item.postTitle}`, 'feedactivity');
-    }
-
-    
+    }  
 
     const handleRemoveLike = async (item) => {
         item.likes.splice(item.likes.indexOf(user.id), 1);
@@ -151,54 +180,54 @@ function Feed(){
         }
     }
 
+    const drawer = (
+        <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            // onClick={toggleDrawer(false)}
+            // onKeyDown={toggleDrawer(false)}
+        >
+            <List>
+                {menuData.map((item, index) => (
+                    <ListItem button key={index} onClick={() => handleToggle(index)}>
+                        <ListItemText primary={item.title} />
+                        {item.subItems.length > 0 && (
+                            <span className={`dropdown-icon ${openIndex === index ? 'open' : ''}`}>
+                                {openIndex === index ? '▲' : '▼'}
+                            </span>
+                        )}
+                        {item.subItems.length > 0 && openIndex === index && (
+                            <List component="div" disablePadding>
+                                {item.subItems.map((subItem, subIndex) => (
+                                    <ListItem button key={subIndex} sx={{ pl: 4 }}>
+                                        <ListItemText primary={subItem.title} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        )}
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
+
+    const handleToggle = (index) => {
+        setOpenIndex(openIndex === index ? null : index);
+    };
+
+    const toggleDrawer = (open) => () => {
+        setOpenDrawer(open);
+    };
+
     return (
         < >
-            {/* <Drawer
-                variant="permanent"
-                sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-                }}
-                
-            >
-                <Box sx={{ overflow: 'auto', top: '70px' }}>
-                    <List>
-                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                        ))}
-                    </List>
-                </Box>
-            </Drawer> */}
-            {/* <div className='container leftboardermenu' >
-                <ul>
-                    {TypeOfFeed && TypeOfFeed.map((item,index)=>{
-                        return <li key={item.value} value={item.value} onClick={getFeed}>{item.name}</li>
-                    })}
-                </ul>
-            </div> */}
+            <IconButton 
+                style={{position:'absolute', left:'10px'}} 
+                edge="start" color="inherit" aria-label="menu" 
+                onClick={toggleDrawer(true)}>
+                <MenuIcon />
+            </IconButton>
             <div style={{ display: 'flex', overflowY:'auto' , width: '100% !important'}}>
-                {/* <SideMenu /> */}
                 <div style={{ flexGrow: 1 }}>
                 {user && feed &&
                     <div className='container ' style={{overflowX : 'hidden', overflowY : 'auto'}}>
@@ -258,7 +287,9 @@ function Feed(){
                 }
                 </div>
             </div>
-            
+            <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer(false)}>
+                {drawer}
+            </Drawer>
         </>
     )
 }

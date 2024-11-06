@@ -529,9 +529,9 @@ const Header = () => {
                     style={{position:'static', marginTop:'0px !important'}}
                 >
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+                        {/* <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
                             <MenuIcon />
-                        </IconButton>
+                        </IconButton> */}
                         <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                         <Typography
                             variant="h6"
@@ -621,9 +621,9 @@ const Header = () => {
                         }
                     </Toolbar>
                 </AppBar>
-                <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer(false)}>
+                {/* <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer(false)}>
                     {drawer}
-                </Drawer>
+                </Drawer> */}
                 {renderMobileMenu}
                 {renderMenu}
                 {renderSearch}

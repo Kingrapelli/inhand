@@ -37,6 +37,14 @@
       "password": "srikanth",
       "city": "",
       "path": ""
+    },
+    {
+      "id": "58ee",
+      "name": "sai lagishetti",
+      "email": "lagishetti@gmail.com",
+      "password": "sai",
+      "city": "",
+      "path": ""
     }
   ],
   "notifications": [

@@ -15,6 +15,7 @@ const Chatbot = () => {
   const [fullname, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const [userlist, setUserList] = useState([{type: 'fullname',data: false},{type: 'email',data: false},
     {type: 'password' ,data: false},{type: 'confirmation',data: false}]);
@@ -230,9 +231,14 @@ const Chatbot = () => {
     <div>
       <div className="chat-window">
         {messages && messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.text}
-          </div>
+          <><div key={index} className={`message ${message.sender}`}>
+            { message.sender == 'bot' && 
+            <img src='/userprofiles/bot.png' alt="" height={'30px'} width={'30px'} style={{borderRadius:'14px'}} />} 
+            {message.text} &nbsp;
+            { message.sender != 'bot' && 
+            <img src={user.image} alt="" height={'22px'} width={'22px'} style={{borderRadius:'14px'}} />} 
+
+          </div></>
         ))}
       </div>
       <form action="" onSubmit={(e) => { e.preventDefault(); sendMessage(); }}>
