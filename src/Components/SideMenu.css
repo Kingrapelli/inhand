@@ -1,0 +1,132 @@
+/* 
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar {
+    width: 200px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    height: 100vh; 
+}
+
+#sidebar h2 {
+    color: #ecf0f1;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+ul li:hover {
+    background-color: #34495e;
+}
+
+.sub-menu {
+    padding-left: 15px;
+}
+
+.sub-menu li {
+    padding: 8px;
+    background-color: #34495e;
+}
+
+.sub-menu li:hover {
+    background-color: #3c6382;
+} */
+
+/* src/SideMenu.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar {
+    width: 220px;
+    background-color: #34495e;
+    color: white;
+    padding: 15px;
+    height: 100vh; /* Full height */
+    position: fixed; /* Keep sidebar fixed */
+}
+
+#sidebar h2 {
+    color: #ecf0f1;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px;
+    cursor: pointer;
+    position: relative; /* For dropdown icon positioning */
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between; /* Space between title and icon */
+    align-items: center; /* Align items vertically */
+}
+
+.menu-item:hover {
+    background-color: #3c6382;
+}
+
+.sub-menu {
+    padding-left: 15px;
+}
+
+.sub-menu li {
+    padding: 8px;
+    background-color: #2c3e50;
+}
+
+.sub-menu li:hover {
+    background-color: #3c6382;
+}
+
+/* Dropdown icon styles */
+.dropdown-icon {
+    transition: transform 0.3s ease;
+}
+
+.dropdown-icon.open {
+    transform: rotate(180deg); /* Rotate icon when open */
+}
+
+
+/* src/SideMenu.css */
+.dropdown-icon {
+    margin-left: auto; 
+    /* Push the icon to the right */
+    transition: transform 0.3s ease;
+}
+
+.dropdown-icon.open {
+    transform: rotate(180deg);
+     /* Rotate icon when open */
+}
+
+/* Hide the original dropdown styles since we are using MUI's List */
+.sub-menu {
+    display: none; 
+    /* This will no longer be used */
+}
+
+.sub-menu li {
+    padding: 8px; 
+    /* This will no longer be used */
+}

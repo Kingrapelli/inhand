@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Message } from './Enums/ErrorMessages';
-import { login } from '../Services/auth';
+import { DBJSON_URL, login } from '../Services/auth';
 
 function Login() {
   const [email,setEmail] = useState('');
@@ -18,14 +18,16 @@ function Login() {
       alert("Fields are mandatory");
       return 
     }
-    const request = await fetch(`http://localhost:5000/users?email=${email}&password=${password}`);
+    const request = await fetch(`${DBJSON_URL}/users?email=${email}&password=${password}`);
     const responce = await request.json();
     if(responce.length >0){
       let token = Math.random().toString(36).slice(2);
       localStorage.setItem('token',token);
       localStorage.setItem('user',JSON.stringify(responce[0]));
+      if(responce[0]['defaultpage'])
+        navigate(`/${responce[0]['defaultpage']}`);
+      else
       navigate('/home');
-      console.log(Message.Logged_In_SuccessFully);
     }
     else
       alert(Message.Error_While_Logging_IN);
@@ -48,10 +50,14 @@ function Login() {
     navigate('/signup')
   }
 
+  const resetPassword = () => {
+    navigate('/resetpassword')
+  }
+
   return (
     <>
       <div id="logindiv">
-        <form >
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           <img src='loginuser.png' alt='' height={150} width={150}></img>
           <input 
             type='email'
@@ -69,7 +75,8 @@ function Login() {
             placeholder='Password'
             required>
           </input>
-          <button id='signin' type='button' onClick={handleSubmit}>SignIn</button>
+          <button id='signin' type='submit'>SignIn</button>
+          <p>Forgot Password? <a onClick={resetPassword} style={{cursor:'pointer'}}>Reset</a></p>
           <p>Don't have an account? <a onClick={navigateToSignup} style={{cursor:'pointer'}}>SignUp</a></p>
         </form>
       </div>

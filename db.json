@@ -4,7 +4,8 @@
       "id": "74e4",
       "name": "Naveen Kumar Rapelli",
       "email": "kingrapelli@gmail.com",
-      "password": "Naveen",
+      "password": "naveen",
+      "defaultpage" : "bookings",
       "image": "Photo.jpg"
     },
     {
@@ -21,17 +22,50 @@
       "password": "sai",
       "city": "",
       "path": ""
+    },
+    {
+      "id": "789b",
+      "name": "navneeth",
+      "email": "navneeth@gmail.com",
+      "password": "navneeth",
+      "city": "",
+      "path": ""
+    },
+    {
+      "id": "0a84",
+      "name": "srikanth",
+      "email": "srisad95@gmail.com",
+      "password": "srikanth",
+      "city": "",
+      "path": ""
+    },
+    {
+      "id": "58ee",
+      "name": "sai lagishetti",
+      "email": "lagishetti@gmail.com",
+      "password": "sai",
+      "city": "",
+      "path": ""
     }
   ],
   "notifications": [
     {
-      "id": "a7f9",
+      "id": "3244",
       "actiontype": 8001,
       "notificationtype": 7001,
       "itemId": "3456",
       "owner": "74e4",
-      "actionby": "599f",
-      "updatedon": "2024-09-30T04:31:21.717Z"
+      "actionby": "74e4",
+      "updatedon": "2024-10-17T16:36:18.894Z"
+    },
+    {
+      "id": "de2b",
+      "actiontype": 8002,
+      "notificationtype": 7001,
+      "itemId": "3456",
+      "owner": "74e4",
+      "actionby": "74e4",
+      "updatedon": "2024-10-17T16:36:38.494Z"
     }
   ],
   "products": [],
@@ -77,6 +111,38 @@
       "description": "nothing1",
       "location": "4003",
       "createdBy": "74e4"
+    },
+    {
+      "id": "020f",
+      "name": "V travels",
+      "type": "1001",
+      "description": "",
+      "location": "4001",
+      "createdBy": "74e4"
+    },
+    {
+      "id": "04b9",
+      "name": "V travels",
+      "type": "1004",
+      "description": "",
+      "location": "4005",
+      "createdBy": "74e4"
+    },
+    {
+      "id": "f33f",
+      "name": "V travels",
+      "type": "1003",
+      "description": "",
+      "location": "4004",
+      "createdBy": "74e4"
+    },
+    {
+      "id": "14ee",
+      "name": "Orange Travels",
+      "type": "1001",
+      "description": "",
+      "location": "4001",
+      "createdBy": "74e4"
     }
   ],
   "hotels": [],
@@ -84,16 +150,20 @@
   "feed": [
     {
       "id": "1234",
+      "feedtype": "6002",
       "postedby": "74e4",
       "postedon": "2023-07-25T23:00:00",
       "postTitle": "About our freedom",
       "imagepath": "download1.jpg",
       "description": "we got our freedom in 1947 but still struggling to get freedom",
-      "likes": [],
+      "likes": [
+        "74e4"
+      ],
       "dislikes": []
     },
     {
       "id": "2345",
+      "feedtype": "6003",
       "postedby": "599f",
       "postedon": "2023-08-15T11:00:00",
       "postTitle": "Raise your voice",
@@ -104,18 +174,21 @@
     },
     {
       "id": "3456",
+      "feedtype": "6002",
       "postedby": "74e4",
       "postedon": "2024-07-20T12:00:00",
       "postTitle": "Keep motivated",
       "imagepath": "download.jpg",
       "description": "we got our freedom in 1947 but still struggling to get motiviated",
       "likes": [
-        "599f"
+        "599f",
+        "74e4"
       ],
       "dislikes": []
     },
     {
       "id": "4567",
+      "feedtype": "6005",
       "postedby": "599f",
       "postedon": "2024-01-05T05:00:00",
       "postTitle": "Be unique",

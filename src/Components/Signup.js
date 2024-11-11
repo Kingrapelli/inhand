@@ -1,12 +1,13 @@
 import React from 'react';
 import { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { register } from '../Services/auth';
+import { DBJSON_URL, register } from '../Services/auth';
+import { validateExistingUser } from './Utilities/TimeAgo';
 
 function Signup(){
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    // const [username, setUsername] = useState('');
+    // const [password, setPassword] = useState('');
     let image ;
 
     const [user, setUser] = useState({
@@ -40,12 +41,12 @@ function Signup(){
     const handleSubmit = async () => {
         if(user.name == '' || user.email == '' || user.password == '')
             return
-        const validatinguser = await validateExistingUser();
+        const validatinguser = await validateExistingUser(user);
         if(validatinguser){
             alert("Email already exists")
             return 
         }
-        const res = fetch('http://localhost:5000/users', {
+        const res = fetch(`${DBJSON_URL}/users`, {
             method: 'POST',
             headers: {
                 "Content-Type" : 'application/json'
@@ -59,49 +60,33 @@ function Signup(){
         });
     }
 
-    const handleRegister = async () => {
-        try {
-          await register(username, password);
-          alert('Registration successful');
-        } catch (error) {
-          console.error('Registration error', error);
-        }
-    };
+    // const handleRegister = async () => {
+    //     try {
+    //       await register(username, password);
+    //       alert('Registration successful');
+    //     } catch (error) {
+    //       console.error('Registration error', error);
+    //     }
+    // };
 
     function NavigateToLogin () {
         navigate('/login');
     }
 
-    const validateExistingUser = async () => {
-        const request = await fetch(`http://localhost:5000/users`,{
-            method: 'GET',
-            headers: {
-                "Content-Type" : 'application/json'
-            }
-        });
-        const res = await request.json();
-        if(res.length){
-            const userpresence = res.find(data => data.email === user.email);
-            return userpresence ? true : false;
-        }else{
-            return false;
-        }
-    }
-
     return (
         <>
             <div id='logindiv'>
-                <form >
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                     <img src='adduser.jpg' alt='' height={120} width={120}></img>
-                    {/* <input
+                    <input
                         type='text'
                         name='name'
                         value={user.name}
                         placeholder='Full Name'
                         onChange={handleChane}
                         required>
-                    </input> */}
-                    {/* <input
+                    </input>
+                    <input
                         type='email'
                         name='email'
                         value={user.email}
@@ -116,8 +101,8 @@ function Signup(){
                         placeholder='Password'
                         onChange={handleChane}
                         required>
-                    </input> */}
-                    <input
+                    </input>
+                    {/* <input
                         type="text"
                         placeholder="Username"
                         value={username}
@@ -128,9 +113,9 @@ function Signup(){
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <input type="file" name='path' onChange={onImageChange} className="filetype" required />
-                    <button id='signin' type='button' onClick={handleRegister}>SignUp</button>
+                    /> */}
+                    {/* <input type="file" name='path' onChange={onImageChange} className="filetype" required /> */}
+                    <button id='signin' type='submit'>SignUp</button>
                     <p>Already have an account? <a onClick={NavigateToLogin} style={{cursor:'pointer'}}>Login</a></p>
                 </form>
             </div>

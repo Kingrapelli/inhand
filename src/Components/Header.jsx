@@ -25,10 +25,41 @@ import { styled, alpha } from '@mui/material/styles';
 import moment from 'moment';
 import { ActionType } from './Enums/ActionType';
 import { timeAgo } from './Utilities/TimeAgo';
+import { Drawer, List, ListItem, ListItemText } from '@mui/material';
+import './SideMenu.css';
+import { DBJSON_URL } from '../Services/auth';
 
 const pages = ['Home','Bookings','Shopping','Food'];
 const settings = ['Profile', 'Dashboard','Settings', 'Logout'];
 
+const menuData = [
+    {
+        title: 'Dashboard',
+        subItems: []
+    },
+    {
+        title: 'Settings',
+        subItems: [
+            { title: 'Profile' },
+            { title: 'Account' },
+            { title: 'Privacy' }
+        ]
+    },
+    {
+        title: 'Reports',
+        subItems: [
+            { title: 'Daily Report' },
+            { title: 'Monthly Report' }
+        ]
+    },
+    {
+        title: 'Help',
+        subItems: [
+            { title: 'FAQ' },
+            { title: 'Contact Support' }
+        ]
+    }
+];
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -75,13 +106,63 @@ const Header = () => {
     const [notifications , setNotification] = useState('');
     const [allUsers, setAllUsers] = useState();
     const [allFeed, setAllFeed] = useState();
+    const [allBookings, setAllBookings] = useState();
+    const [allRestaurants, setAllRestaurants] = useState();
+    // const [searchcontent, setSearchContent] = useState();
+    const [searchResult, setSearchResult] = useState();
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openIndex, setOpenIndex] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(()=>{
         getAllUsers();
         getAllFeed();
-        getNotifications();
+        getAllBookings();
+        getAllRestaurants();
+        setInterval(() => {
+            getNotifications();
+        }, 2000);
     },[]);
+
+    const handleToggle = (index) => {
+        setOpenIndex(openIndex === index ? null : index);
+    };
+
+    const toggleDrawer = (open) => () => {
+        setOpenDrawer(open);
+    };
+
+    const drawer = (
+        <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            // onClick={toggleDrawer(false)}
+            // onKeyDown={toggleDrawer(false)}
+        >
+            <List>
+                {menuData.map((item, index) => (
+                    <ListItem button key={index} onClick={() => handleToggle(index)}>
+                        <ListItemText primary={item.title} />
+                        {item.subItems.length > 0 && (
+                            <span className={`dropdown-icon ${openIndex === index ? 'open' : ''}`}>
+                                {openIndex === index ? '▲' : '▼'}
+                            </span>
+                        )}
+                        {item.subItems.length > 0 && openIndex === index && (
+                            <List component="div" disablePadding>
+                                {item.subItems.map((subItem, subIndex) => (
+                                    <ListItem button key={subIndex} sx={{ pl: 4 }}>
+                                        <ListItemText primary={subItem.title} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        )}
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
 
     function handleLogout(){
         localStorage.removeItem('token');
@@ -90,7 +171,7 @@ const Header = () => {
     }
 
     const getNotifications = async () => {
-        const req = await fetch('http://localhost:5000/notifications');
+        const req = await fetch(`${DBJSON_URL}/notifications`);
         const res = await req.json();
         if(res.length > 0 && user) {
             let result = res.filter(item => {return item.owner == user.id;});
@@ -102,7 +183,7 @@ const Header = () => {
     }
 
     const getAllUsers = async () => {
-        const request = await fetch(`http://localhost:5000/users`,{
+        const request = await fetch(`${DBJSON_URL}/users`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -113,8 +194,32 @@ const Header = () => {
             setAllUsers(res);
     }
 
+    const getAllBookings = async () => {
+        const request = await fetch(`${DBJSON_URL}/transport`,{
+            method: 'GET',
+            headers: {
+                "Content-Type" : 'application/json'
+            }
+        });
+        const res = await request.json();
+        if(res.length > 0)
+            setAllBookings(res);
+    }
+
+    const getAllRestaurants = async () => {
+        const request = await fetch(`${DBJSON_URL}/restaurants`,{
+            method: 'GET',
+            headers: {
+                "Content-Type" : 'application/json'
+            }
+        });
+        const res = await request.json();
+        if(res.length > 0)
+            setAllRestaurants(res);
+    }
+
     const getAllFeed = async () => {
-        const request = await fetch(`http://localhost:5000/feed`,{
+        const request = await fetch(`${DBJSON_URL}/feed`,{
             method: 'GET',
             headers: {
                 "Content-Type" : 'application/json'
@@ -148,16 +253,18 @@ const Header = () => {
 
     const getFeedDetailsById = (itemid) => {
         const result = allFeed && allFeed.filter(item=> item.id === itemid);
-        return result[0];
+        return result && result[0];
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [notificationAnchorEl, setNotificationAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const [searchAnchorEl, setSearchAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const isNotificationOpen = Boolean(notificationAnchorEl);
+    const isSearchOpen = Boolean(searchAnchorEl);
 
 
     const handleProfileMenuOpen = (event) => {
@@ -166,12 +273,16 @@ const Header = () => {
 
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
+        setNotificationAnchorEl(null);
+        setSearchAnchorEl(null);
+        setAnchorEl(null)
     };
 
     const handleMenuClose = () => {
         setAnchorEl(null);
         handleMobileMenuClose();
         setNotificationAnchorEl();
+        setSearchAnchorEl(null);
     };
 
     const handleMobileMenuOpen = (event) => {
@@ -181,6 +292,78 @@ const Header = () => {
     const handleNotificationOpen = (event) => {
         setNotificationAnchorEl(event.currentTarget);
     };
+
+    const handleSearchOpen = (event) => {
+        setSearchAnchorEl(event);
+    };
+
+    const handleSearch = async (event) => {
+        const bookings = allBookings && allBookings.filter(item=>
+            item.name.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+        const restaurants = allRestaurants && allRestaurants.filter(item=>
+            item.name.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+        let data = [];
+        if(bookings && bookings.length)
+            data = data.concat(bookings);
+        if(restaurants && restaurants.length)
+            data = data.concat(restaurants);
+        return data;
+    }
+
+    const handleSearchChange = async (event) => {
+        if(!event.target.value){
+            setSearchResult(null);
+            return
+        }
+        const result = await handleSearch(event);
+        console.log(result);
+        if(result && result.length > 0)
+            setSearchResult(result);
+        else
+            setSearchResult(null);
+        setTimeout(() => {
+            handleSearchOpen(event.target);
+        }, 2000);
+    }
+
+    const searchId = 'primary-search-menu';
+    const renderSearch = (
+        <>{
+            user && <>
+                <Menu
+                    anchorEl={searchAnchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    id={searchId}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={isSearchOpen}
+                    onClose={handleMenuClose}
+                    >
+                    {(searchResult && searchResult.length) ? searchResult.map((item) => (
+                        <MenuItem key={item.id} >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            {item.name}
+                        </Typography>
+                        </MenuItem>
+                    )) : 
+                    <MenuItem key='emptysearch' >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            <small>No Items found</small>
+                        </Typography>
+                    </MenuItem>}
+                </Menu>
+            </>
+        }
+        </>
+    );
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -327,7 +510,7 @@ const Header = () => {
                         color="inherit"
                         >
                         {/* <AccountCircle /> */}
-                        <Avatar alt="Remy Sharp" src={user.image} />
+                        <Avatar alt="Remy Sharp" src={user.image || '/userprofiles/defaultpicture.png'} />
                         </IconButton>
                         <p>Profile</p>
                     </MenuItem>
@@ -338,100 +521,115 @@ const Header = () => {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-            <Toolbar>
-            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Typography
-                variant="h6"
-                noWrap
-                component={Link}
-                to={'/'}
-                sx={{
-                    mr: 2,
-                    display: { xs: 'none', md: 'flex' },
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    letterSpacing: '.3rem',
-                    color: 'inherit',
-                    textDecoration: 'none',
-                }}
-            >
-                INHAND
-            </Typography>
-            {
-                user && <>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                component={Link}
-                                to={`/${page.toLowerCase()}`}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
-                    <Search>
-                        <SearchIconWrapper>
-                        <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                        placeholder="Search…"
-                        inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-                    
-                    {/* <Box sx={{ flexGrow: 1 }} /> */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={4} color="error">
-                            <MailIcon />
-                        </Badge>
-                        </IconButton>
-                        <IconButton onClick={handleNotificationOpen}
-                        size="large"
-                        aria-label="show 17 new notifications"
-                        color="inherit"
+        <>
+            {/* <Box sx={{ flexGrow: 1 }} style={{position:'static'}}> */}
+            {/* style={{position:'relative', top:'0px', marginTop:'0px !important'}} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} */}
+                <AppBar 
+                    sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    style={{position:'static', marginTop:'0px !important'}}
+                >
+                    <Toolbar>
+                        {/* <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+                            <MenuIcon />
+                        </IconButton> */}
+                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component={Link}
+                            to={'/'}
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
                         >
+                            INHAND
+                        </Typography>
                         {
-                            notifications && notifications.length ?
-                            <>
-                                <Badge badgeContent={notifications && notifications.length} color="error">
-                                    <NotificationsIcon />
-                                </Badge>
-                            </> : <>
-                                <Badge color="error">
-                                    <NotificationsIcon />
-                                </Badge>
+                            user && <>
+                                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                                    {pages.map((page) => (
+                                        <Button
+                                            key={page}
+                                            component={Link}
+                                            to={`/${page.toLowerCase()}`}
+                                            sx={{ my: 2, color: 'white', display: 'block' }}
+                                        >
+                                            {page}
+                                        </Button>
+                                    ))}
+                                </Box>
+                                <Search>
+                                    <SearchIconWrapper>
+                                    <SearchIcon />
+                                    </SearchIconWrapper>
+                                    <StyledInputBase
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={handleSearchChange}
+                                    key='searchcontent'
+                                    // onChange={handleSearch}
+                                    // value={searchcontent}
+                                    />
+                                </Search>
+                                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                                    <Badge badgeContent={4} color="error">
+                                        <MailIcon />
+                                    </Badge>
+                                    </IconButton>
+                                    <IconButton onClick={handleNotificationOpen}
+                                    size="large"
+                                    aria-label="show 17 new notifications"
+                                    color="inherit"
+                                    >
+                                    {
+                                        notifications && notifications.length ?
+                                        <>
+                                            <Badge badgeContent={notifications && notifications.length} color="error">
+                                                <NotificationsIcon />
+                                            </Badge>
+                                        </> : <>
+                                            <Badge color="error">
+                                                <NotificationsIcon />
+                                            </Badge>
+                                        </>
+                                    }
+                                    </IconButton>
+                                    <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }} style={{marginLeft:'10px'}}>
+                                        <Avatar alt="Remy Sharp" src={user.image || '/userprofiles/defaultpicture.png'} />
+                                    </IconButton>
+                                </Box>
+                                <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                                    <IconButton
+                                    size="large"
+                                    aria-label="show more"
+                                    aria-controls={mobileMenuId}
+                                    aria-haspopup="true"
+                                    onClick={handleMobileMenuOpen}
+                                    color="inherit"
+                                    >
+                                    <MoreIcon />
+                                    </IconButton>
+                                </Box>
                             </>
                         }
-                        </IconButton>
-                        <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }} style={{marginLeft:'10px'}}>
-                            <Avatar alt="Remy Sharp" src={user.image} />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                        size="large"
-                        aria-label="show more"
-                        aria-controls={mobileMenuId}
-                        aria-haspopup="true"
-                        onClick={handleMobileMenuOpen}
-                        color="inherit"
-                        >
-                        <MoreIcon />
-                        </IconButton>
-                    </Box>
-                </>
-            }
-            </Toolbar>
-        </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
-        {renderNotification}
-        </Box>
+                    </Toolbar>
+                </AppBar>
+                {/* <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer(false)}>
+                    {drawer}
+                </Drawer> */}
+                {renderMobileMenu}
+                {renderMenu}
+                {renderSearch}
+                {renderNotification}
+            {/* </Box> */}
+        </>
     );
 }
 
