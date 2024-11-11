@@ -6,7 +6,7 @@ import { DBJSON_URL } from '../../Services/auth';
 // import Bookings from '../Enums/Booking'
 
 function NewBooking(){
-    const navigate = useNavigate();
+    const newBookingNavigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
 
     const [booking, setBooking] = new useState({
@@ -37,7 +37,7 @@ function NewBooking(){
             body: JSON.stringify(booking)
         }).then(()=>{
             alert("New Booking got created");
-            navigate('/bookings');
+            newBookingNavigate('/bookings');
         }).catch((error)=>{
             alert("Error while saving New Booking entry")
         })
@@ -57,14 +57,14 @@ function NewBooking(){
                         onChange={handleChange}
                         required>
                     </input>
-                    <label htmlFor="typeofbooking" key={'typeofbooking'} style={{float: 'left'}}>Type of Booking </label>
-                    <select id='typeofbooking' name='type' onClick={handleChange}>
+                    <label htmlFor="typeofbooking" key='typeofbooking' style={{float: 'left'}}>Type of Booking </label>
+                    <select id='typeofbooking' name='bookingtype' onClick={handleChange}>
                         <option value={''} onClick={handleChange}></option>
-                        {Bookings && Bookings.map(item=>{
-                            return <option key={item.value} value={item.value} onClick={handleChange}>{item.name}</option>
+                        {Bookings && Bookings.map(booking=>{
+                            return <option key={booking.value} value={booking.value} onClick={handleChange}>{booking.name}</option>
                         })}
                     </select>
-                    <label htmlFor="description" key={'description'} style={{float: 'left'}}>Description </label>
+                    <label htmlFor="description" key='description' style={{float: 'left'}}>Description </label>
                     <input id='description'
                         type='text'
                         name='description'
@@ -73,11 +73,11 @@ function NewBooking(){
                         onChange={handleChange}
                         required>
                     </input>
-                    <label htmlFor="location" key={'location'} style={{float: 'left'}}>Location </label>
+                    <label htmlFor="location" key='location' style={{float: 'left'}}>Location </label>
                     <select id='locationnew' name='location' onClick={handleChange}>
                         <option value={''} onClick={handleChange}></option>
-                        {Locations && Locations.map(item=>{
-                            return <option key='item' value={item.value} onClick={handleChange}>{item.name}</option>
+                        {Locations && Locations.map(location=>{
+                            return <option key={location.value} value={location.value} onClick={handleChange}>{location.name}</option>
                         })}
                     </select>
                     <button id='signin' type="button" onClick={handleSubmit}>Create</button>

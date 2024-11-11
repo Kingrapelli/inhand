@@ -5,6 +5,7 @@
       "name": "Naveen Kumar Rapelli",
       "email": "kingrapelli@gmail.com",
       "password": "naveen",
+      "defaultpage" : "bookings",
       "image": "Photo.jpg"
     },
     {

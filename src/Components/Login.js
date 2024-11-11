@@ -24,8 +24,10 @@ function Login() {
       let token = Math.random().toString(36).slice(2);
       localStorage.setItem('token',token);
       localStorage.setItem('user',JSON.stringify(responce[0]));
+      if(responce[0]['defaultpage'])
+        navigate(`/${responce[0]['defaultpage']}`);
+      else
       navigate('/home');
-      console.log(Message.Logged_In_SuccessFully);
     }
     else
       alert(Message.Error_While_Logging_IN);

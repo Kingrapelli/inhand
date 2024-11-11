@@ -236,7 +236,7 @@ const Chatbot = () => {
             <img src='/userprofiles/bot.png' alt="" height={'30px'} width={'30px'} style={{borderRadius:'14px'}} />} 
             {message.text} &nbsp;
             { message.sender != 'bot' && 
-            <img src={user.image} alt="" height={'22px'} width={'22px'} style={{borderRadius:'14px'}} />} 
+            <img src={user ? user.image : '/userprofiles/defaultpicture.png'} alt="" height={'22px'} width={'22px'} style={{borderRadius:'14px'}} />} 
 
           </div></>
         ))}

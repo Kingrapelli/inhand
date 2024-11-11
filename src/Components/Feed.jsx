@@ -22,27 +22,9 @@ const menuData = [
         subItems: []
     },
     {
-        title: 'Settings',
-        subItems: [
-            { title: 'Profile' },
-            { title: 'Account' },
-            { title: 'Privacy' }
-        ]
+        title: 'Feeds',
+        subItems: [... TypeOfFeed]
     },
-    {
-        title: 'Reports',
-        subItems: [
-            { title: 'Daily Report' },
-            { title: 'Monthly Report' }
-        ]
-    },
-    {
-        title: 'Help',
-        subItems: [
-            { title: 'FAQ' },
-            { title: 'Contact Support' }
-        ]
-    }
 ];
 
 const Feed = () => {
@@ -58,9 +40,9 @@ const Feed = () => {
         getFeed();
     },[]);
 
-    const getFeed = async (e) => {
-        if(e && e.target && e.target.value){
-            setFeedType(e.target.value)
+    const getFeed = async (value) => {
+        if(value){
+            setFeedType(value)
         }
         const req = await fetch(`${DBJSON_URL}/feed`,{
             method: 'GET',
@@ -71,8 +53,8 @@ const Feed = () => {
         const res = await req.json('');
         if(res.length > 0){
             let _res = res.sort((a,b)=>new Date(b.postedon) - new Date(a.postedon)); //sorting based on creation date
-            if(e && e.target && e.target.value && e.target.value != '6001'){
-                _res = _res && _res.filter(item=> {return item.feedtype == e.target.value});
+            if(value && value != '6001'){
+                _res = _res && _res.filter(item=> {return item.feedtype == value});
             }
             setFeed(_res);
         }else{
@@ -94,7 +76,7 @@ const Feed = () => {
         await updateFeed(item);
         await sendNotification(item,user.id, ActionType.Like);
         await sendEmail(user, `${user.name} liked your post ${item.postTitle}`, 'feedactivity');
-    }  
+    }
 
     const handleRemoveLike = async (item) => {
         item.likes.splice(item.likes.indexOf(user.id), 1);
@@ -189,10 +171,13 @@ const Feed = () => {
         >
             <List>
                 {menuData.map((item, index) => (
-                    <ListItem button key={index} onClick={() => handleToggle(index)}>
-                        <ListItemText primary={item.title} />
+                    <ListItem button key={index} >
+                        <ListItemText primary={item.title} onClick={() => handleToggle(index)}/>
                         {item.subItems.length > 0 && (
-                            <span className={`dropdown-icon ${openIndex === index ? 'open' : ''}`}>
+                            <span 
+                                className={`dropdown-icon ${openIndex === index ? 'open' : ''}`}
+                                onClick={() => handleToggle(index)}
+                            >
                                 {openIndex === index ? '▲' : '▼'}
                             </span>
                         )}
@@ -200,7 +185,7 @@ const Feed = () => {
                             <List component="div" disablePadding>
                                 {item.subItems.map((subItem, subIndex) => (
                                     <ListItem button key={subIndex} sx={{ pl: 4 }}>
-                                        <ListItemText primary={subItem.title} />
+                                        <ListItemText primary={subItem.title} onClick={(()=> getFeed(subItem.value))}/>
                                     </ListItem>
                                 ))}
                             </List>
@@ -231,11 +216,7 @@ const Feed = () => {
                 <div style={{ flexGrow: 1 }}>
                 {user && feed &&
                     <div className='container ' style={{overflowX : 'hidden', overflowY : 'auto'}}>
-                    {/* <div className='container ' sx={{ flexGrow: 1, p: 3 }}> */}
                         <div className='' style={{height: '100% !important'}}> 
-                            
-                            <div >
-                            {/* className='feedbox' */}
                             <h5 style={{float:'left'}}>- Feed / {getMasterDataById(feedtype,'feedtype')}</h5>
                             <Grid container spacing={1} style={{overflowY:'auto', textAlign:'center', justifyContent:'center',margin: '10px'}}>
                                 {feed && feed.map((item) => (
@@ -281,7 +262,6 @@ const Feed = () => {
                                     </Card>
                                 ))}
                                 </Grid>
-                            </div>
                         </div>
                     </div>
                 }

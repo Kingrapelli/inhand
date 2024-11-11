@@ -310,3 +310,14 @@ input,select {
 .MuiPaper-root  {
   top: 70px !important;
 }
+
+select {
+  padding: 4px;
+  margin: 0;
+  border: none; /* Optional: remove border if you don't want one */
+  background: transparent; /* Optional: remove background */
+}
+/* 
+option {
+  padding: 0;
+} */
