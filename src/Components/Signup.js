@@ -30,7 +30,7 @@ function Signup(){
             navigate('/dashboard');
     })
 
-    const handleChane = async (e) => {
+    const handleChange = async (e) => {
         const {name, value} = e.target;
         setUser((prevuser)=>({
             ... prevuser,
@@ -83,7 +83,7 @@ function Signup(){
                         name='name'
                         value={user.name}
                         placeholder='Full Name'
-                        onChange={handleChane}
+                        onChange={handleChange}
                         required>
                     </input>
                     <input
@@ -91,7 +91,7 @@ function Signup(){
                         name='email'
                         value={user.email}
                         placeholder='Email'
-                        onChange={handleChane}
+                        onChange={handleChange}
                         required>
                     </input>
                     <input
@@ -99,7 +99,7 @@ function Signup(){
                         name='password'
                         value={user.password}
                         placeholder='Password'
-                        onChange={handleChane}
+                        onChange={handleChange}
                         required>
                     </input>
                     {/* <input

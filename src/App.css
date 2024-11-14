@@ -311,7 +311,7 @@ input,select {
   top: 70px !important;
 }
 
-#bookingmain select {
+#bookingmain select,input {
   padding: 4px;
   margin: 0;
   /* border: none; */
