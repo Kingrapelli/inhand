@@ -4,16 +4,21 @@ import Bookings from '../Enums/BookingEnum';
 import Locations from '../Enums/LocationEnum';
 import { DBJSON_URL } from '../../Services/auth';
 // import Bookings from '../Enums/Booking'
+import Switch from '@mui/material/Switch';
+import Checkbox from '@mui/material/Checkbox';
 
 function NewBooking(){
     const newBookingNavigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
+    const [togglechecked, setToggleChecked] = React.useState(false);
+    const [checked, setChecked] = React.useState(false);
 
     const [booking, setBooking] = new useState({
         name : '',
         type : '',
         description : '',
-        location : '',
+        fromlocation : '',
+        tolocation : '',
         createdBy : user.id
     });
 
@@ -43,12 +48,20 @@ function NewBooking(){
         })
     }
 
+    const handleToggle = (event) => {
+        setToggleChecked(event.target.checked);
+    };
+
+    const handleCheckbox = (event) => {
+        setChecked(event.target.checked);
+      };
+
     return (
         <>
             <Link to="/bookings"><button type="button" className='backButton' >Back</button></Link>
             <div id='logindiv'>
                 Create New Booking
-                <form>
+                <form onSubmit={(e)=>{e.preventDefault();handleSubmit() }}>
                     <input 
                         type='text'
                         name='name'
@@ -73,14 +86,38 @@ function NewBooking(){
                         onChange={handleChange}
                         required>
                     </input>
-                    <label htmlFor="location" key='location' style={{float: 'left'}}>Location </label>
-                    <select id='locationnew' name='location' onClick={handleChange}>
+                    <label htmlFor="fromlocation" key='fromlocation' style={{float: 'left'}}>From Location </label>
+                    <select id='locationnew' name='fromlocation' onClick={handleChange}>
                         <option value={''} onClick={handleChange}></option>
-                        {Locations && Locations.map(location=>{
-                            return <option key={location.value} value={location.value} onClick={handleChange}>{location.name}</option>
+                        {Locations && Locations.map(fromlocation=>{
+                            return <option key={fromlocation.value} value={fromlocation.value} onClick={handleChange}>{fromlocation.name}</option>
                         })}
                     </select>
-                    <button id='signin' type="button" onClick={handleSubmit}>Create</button>
+                    <label htmlFor="tolocation" key='tolocation' style={{float: 'left'}}>To Location </label>
+                    <select id='locationnew' name='tolocation' onClick={handleChange}>
+                        <option value={''} onClick={handleChange}></option>
+                        {Locations && Locations.map(tolocation=>{
+                            return <option key={tolocation.value} value={tolocation.value} onClick={handleChange}>{tolocation.name}</option>
+                        })}
+                    </select>
+                    {/* <label htmlFor="toggleswitch" key='toggleswitch' style={{float: 'left'}}>Stops : </label> */}
+                    {/* <Switch
+                        id='toggleswitch'
+                        checked={togglechecked}
+                        onChange={handleToggle}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                    {togglechecked && 
+                        <>
+                            
+                        </>
+                    } */}
+                    {/* <Checkbox
+                        checked={checked}
+                        onChange={handleCheckbox}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    /> */}
+                    <button id='signin' type="submit">Create</button>
                 </form>
             </div>
         </>

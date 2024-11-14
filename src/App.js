@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { Routes, Route, useNavigate, Navigate  } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
@@ -13,13 +12,10 @@ import NewBooking from './Components/Booking/NewBooking';
 import FoodMain from './Components/Food/FoodMain';
 import ShoppingMain from './Components/Shopping/ShoppingMain';
 import Settings from './Components/Settings';
-import Todos from './Components/Todos';
 import KAI from './Components/KAI';
 import ResetPassword from './Components/ResetPassword';
 import Profile from './Components/Profile';
-// import SideMenu from './Components/SideMenu';
-// import { browserHistory, Router, Route  } from 'react-router';
-// const { default: jwt_decode } = require("jwt-decode");
+import MainDashboard from './Components/Dashboards/MainDashboard';
 
 function App() {
   const navigate = useNavigate();
@@ -49,6 +45,7 @@ function App() {
             <Route path='/shopping' element={token ? < ShoppingMain /> : <Navigate to="/login"/>} />
             <Route path='/settings' element={token ? < Settings /> : <Navigate to="/login"/>} />
             <Route path='/profile' element={token ? < Profile /> : <Navigate to="/login"/>} />
+            <Route path='/dashboard' element = {token ? <MainDashboard/> : <Navigate to="/login"/>}/>
           </Routes >
         </span>
         <KAI></KAI>

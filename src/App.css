@@ -102,7 +102,7 @@ input,select {
 
 .createButton {
   float: right;
-  width: 80px;
+  /* width: 80px;
   margin: 5px;
   border-radius: 10px;
   border-color: white;
@@ -110,7 +110,7 @@ input,select {
   height: 30px;
   color: black;
   font-weight: 550;
-  cursor: pointer;
+  cursor: pointer; */
 }
 
 .backButton {
@@ -311,13 +311,33 @@ input,select {
   top: 70px !important;
 }
 
-select {
+#bookingmain select {
   padding: 4px;
   margin: 0;
-  border: none; /* Optional: remove border if you don't want one */
-  background: transparent; /* Optional: remove background */
+  /* border: none; */
+  /* background: transparent; */
+}
+
+#bookingmain button {
+  height: 32px;
+  margin: auto;
+  text-align: center;
+  /* justify-content: center; */
+  /* padding-bottom: 28px; */
+  padding-top: 0px;
+  width: 100px;
 }
 /* 
 option {
   padding: 0;
+} */
+
+/* #bookingmain select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 5px !important;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 } */
