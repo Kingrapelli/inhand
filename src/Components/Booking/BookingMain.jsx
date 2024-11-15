@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, IconButton, Box, List, ListItem, ListItemText, Drawer } from '@mui/material';
+import { Card, CardActions, CardContent, CardMedia, Button, Typography, Grid, IconButton, Box, List, ListItem, ListItemText, Drawer, MenuItem, Checkbox, Select, OutlinedInput } from '@mui/material';
 import Bookings from '../Enums/BookingEnum';
 import Locations from '../Enums/LocationEnum';
 import { DBJSON_URL } from '../../Services/auth';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import InputLabel from '@mui/material/InputLabel';
+import BookingSeats from '../Enums/BookingSeats';
 
 const menuData = [
     {
@@ -31,6 +33,17 @@ const menuData = [
     }
 ];
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 function BookingMain(){
     const navigate = useNavigate();
     const [fromLocation, setFromLocation] = useState('');
@@ -46,12 +59,13 @@ function BookingMain(){
         tolocation : '',
         noofseats : '',
         passangers : []
-    })
+    });
+    const [variantName, setVariantName] = React.useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect( ()=>{
         handleRequest(null);
-    },[fromLocation, toLocation])
+    },[fromLocation, toLocation, newBookingForm, variantName])
 
     const handleRequest = async (e) => {
         
@@ -116,11 +130,13 @@ function BookingMain(){
 
     const toggleBookingDrawer = (open, item = null) => () => {
         setSelectedBooking(item);
-        setNewBookingForm({})
+        setNewBookingForm({});
+        setVariantName([]);
         setOpenBookingDrawer(open);
     };
 
     const handleChange = async (e) => {
+
         let {name, value} = e.target;
         if(name.split(".")[0] == 'passangers'){
             let keysarr = name.split(".");
@@ -133,6 +149,26 @@ function BookingMain(){
             valuearr[Number(keysarr[2])][keysarr[1]] = value;
             name = keysarr[0];
             value = valuearr;
+        }
+        if(name == 'seats'){
+            const filterdValue = value.filter(
+                (item) => variantName.findIndex((o) => o.seatno === item.seatno) >= 0
+            );
+            console.log("filterdValue", filterdValue);
+            value.bookedby = user.id;
+            value.bookedat = new Date();
+            let duplicateRemoved = [];
+
+            value.forEach((item) => {
+                if (duplicateRemoved.findIndex((o) => o.seatno === item.seatno) >= 0) {
+                    duplicateRemoved = duplicateRemoved.filter((x) => x.seatno === item.seatno);
+                } else {
+                    duplicateRemoved.push(item);
+                }
+            });
+            console.log(duplicateRemoved);
+            setVariantName(duplicateRemoved);
+            value = duplicateRemoved;
         }
         // need to remove the object if no of seats count got decreased
         setNewBookingForm((prev)=>({
@@ -227,28 +263,62 @@ function BookingMain(){
                                 <label className='' htmlFor="noofseats" key='noofseats' style={{float: 'left'}}>No of seats :</label>
                                 <input type="number" name="noofseats" id="noofseats" min="0" onChange={handleChange}/>
                             </span>
-                            {newBookingForm.noofseats > 1 ? 
+                            {newBookingForm.noofseats > 0 && 
+                                <div style={{width: '100% !important'}}>
+                                    <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+                                    <Select
+                                        labelId="demo-multiple-checkbox-label"
+                                        id="demo-multiple-checkbox"
+                                        name="seats"
+                                        multiple
+                                        value={variantName}
+                                        onChange={handleChange}
+                                        input={<OutlinedInput label="Tag" />}
+                                        renderValue={(selected) => selected.map((x) => x.seatno).join(', ')}
+                                        MenuProps={MenuProps}
+                                    >
+                                    {BookingSeats && BookingSeats.map(seat => (
+                                        <MenuItem key={seat.seatno} value={seat}>
+                                            <Checkbox
+                                                checked={
+                                                    variantName.findIndex(item => item.seatno === seat.seatno) >= 0
+                                                }
+                                            />
+                                            <ListItemText primary={seat.seatno + " " + seat.type} />
+                                        </MenuItem>
+                                    ))}
+                                    </Select>
+                                </div>
+                            }
+                            {((newBookingForm.noofseats == variantName.length && newBookingForm.noofseats != 0 && variantName.length != 0)) && 
                                 <>
-                                    {Array.from({ length: newBookingForm.noofseats }, (_, index) => index).map((item, index)=>{
-                                        return <>
-                                            Passeger {index + 1}
-                                            <input type="text" name={`passangers.name.${index}`} id="" placeholder='Enter name' onChange={handleChange}/>
-                                            <input type="text" name={`passangers.age.${index}`} id="" placeholder='Enter age' onChange={handleChange}/>
-                                            
-                                        </>
-                                    })}
-                                </> : 
-                                <>
-                                    {newBookingForm.noofseats == 1 && 
+                                    {newBookingForm.noofseats > 1 ? 
                                         <>
-                                            <input type="text" name="" id="" placeholder='Enter name'/>
+                                            {Array.from({ length: newBookingForm.noofseats }, (_, index) => index).map((item, index)=>{
+                                                return <>
+                                                    {variantName && variantName[index]?.seatno} Passeger details {index + 1}
+                                                    <input type="text" name={`passangers.name.${index}`} id="" placeholder='Enter name' onChange={handleChange}/>
+                                                    <input type="text" name={`passangers.age.${index}`} id="" placeholder='Enter age' onChange={handleChange}/>
+                                                    <input type="text" name={`passangers.seatno.${index}`} disabled id="" value={variantName[index]?.seatno} onChange={handleChange}/>
+                                                </>
+                                            })}
+                                        </> : 
+                                        <>
+                                            {newBookingForm.noofseats == 1 && 
+                                                <>
+                                                    {variantName && variantName[0]?.seatno} Passenger details
+                                                    <input type="text" name={`passangers.name.${0}`} id="" placeholder='Enter name' onChange={handleChange}/>
+                                                    <input type="text" name={`passangers.age.${0}`} id="" placeholder='Enter age' onChange={handleChange}/>
+                                                    <input type="text" name={`passangers.seatno.${0}`} disabled id="" value={variantName[0]?.seatno} onChange={handleChange}/>
+                                                </>
+                                            }
                                         </>
                                     }
+                                    <input type="phone" name={`mobile`} id="mobile" placeholder='Enter Mobile' onChange={handleChange}/>
+                                    <input type="mail" name={`mail`} id="" placeholder='Enter email' onChange={handleChange}/>
+                                    <button type="submit">Book</button>
                                 </>
                             }
-                            <input type="phone" name={`mobile`} id="" placeholder='Enter Mobile no' onChange={handleChange}/>
-                            <input type="mail" name={`mail`} id="" placeholder='Enter email' onChange={handleChange}/>
-                            <button type="submit">Book</button>
                         </form>
                     </>
                 }
