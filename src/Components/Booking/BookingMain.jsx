@@ -13,6 +13,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Container from "@mui/material/Container";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"; 
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import "./CardDetails.css";
 
 const menuData = [
     {
@@ -68,9 +69,14 @@ function BookingMain(){
     });
     const [variantName, setVariantName] = React.useState([]);
     const [pricing, setPricing] = useState({});
-
+    const [isPaymentDone, setIsPaymentDone] = useState(false);
     const [open, setOpen] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
+    const [card, setCard] = useState({
+        cardno: "",
+        cardtype: "far fa-credit-card",
+        expirydt: ""
+    });
 
     useEffect( ()=>{
         handleRequest(null);
@@ -142,6 +148,7 @@ function BookingMain(){
         setNewBookingForm({});
         setVariantName([]);
         setOpenBookingDrawer(open);
+        setIsPaymentDone(false);
     };
 
     const handleChange = async (e) => {
@@ -207,7 +214,9 @@ function BookingMain(){
         }
         console.log(selectedBooking, newBookingForm);
         await updateTransportData(newBookingForm['transportid'], selectedBooking);
-        await saveBookingData(newBookingForm);
+        await saveBookingData(newBookingForm).then(()=>{
+            toggleBookingDrawer(false)
+        });
     }
 
     const updateTransportData = async (transportid, data) => {
@@ -270,6 +279,91 @@ function BookingMain(){
         </Box>
     );
 
+    const validateBookingForm = async () => {
+        let allKeysHaveValue = true;
+        console.log(newBookingForm);
+        if(!newBookingForm['fromlocation']
+            || !newBookingForm['tolocation']
+            || !newBookingForm['noofseats']
+            || !newBookingForm['passangers']
+            || !newBookingForm['mobile']
+            || !newBookingForm['mail']
+            || !newBookingForm['seats']
+        ){
+                allKeysHaveValue = false;
+        }
+        if(!allKeysHaveValue){
+            alert("Please enter details")
+            return
+        }
+        setIsPaymentDone(true);
+    }
+
+    const onCardDetailsChange = (e) => {
+        var cartype_new = cardnumber(e.target.value);
+        setCard({
+          ...card,
+          cardno: e.target.value,
+          cardtype: cartype_new
+        });
+    };
+
+    const cardnumber = (inputtxt) => {
+        var matches = inputtxt.match(/(\d+)/);
+        var cardno = "";
+        if (matches) {
+          cardno = inputtxt.split(" - ").join("");
+        }
+        var cardtype1 = card.cardtype;
+        //var visa = /^(?:4[0-9]{16}(?:[0-9]{3})?)$/;
+        var visa = /^(?:4[0-9]{2}?)$/;
+        var mastercardRegEx = /^(?:5[1-5][0-9]{3})$/;
+        var amexpRegEx = /^(?:3[47][0-9]{3})$/;
+        var discovRegEx = /^(?:6(?:011|5[0-9][0-9])[0-9]{5})$/;
+        if (visa.test(cardno) === true) {
+          //eg:4651970022334445
+          cardtype1 = "far fa fa-3x fa-cc-visa  carddetail-cardtype";
+        } else if (mastercardRegEx.test(cardno) === true) {
+          cardtype1 = "far fa fa-3x fa-cc-mastercard carddetail-cardtype";
+        } else if (amexpRegEx.test(cardno) === true) {
+          cardtype1 = "far fa fa-3x fa-cc-amex carddetail-cardtype";
+        } else if (discovRegEx.test(cardno) === true) {
+          cardtype1 = "far fa fa-3x fa-cc-discover carddetail-cardtype";
+        }
+        return cardtype1;
+    };
+
+    const cc_format = (value) => {
+        const v = value.replace(/[^0-9]/gi, "").substr(0, 16);
+
+        const parts = [];
+        for (let i = 0; i < v.length; i += 4) {
+            parts.push(v.substr(i, 4));
+        }
+        return parts.length > 1 ? parts.join(" - ") : value;
+    };
+
+    const expriy_format = (value) => {
+        const expdate = value;
+        const expDateFormatter =
+            expdate.replace(/\//g, "").substring(0, 2) +
+            (expdate.length > 2 ? "/" : "") +
+            expdate.replace(/\//g, "").substring(2, 4);
+
+        return expDateFormatter;
+    };
+
+    const onChangeExp = (e) => {
+        setCard({
+            ...card,
+            expirydt: e.target.value
+        });
+    };
+
+    const validateCardDetails = async () => {
+        console.log(card);
+    }
+
     const bookingDrawer = (
         <Box
             sx={{ width: 300 , padding:'5px', paddingBottom:'60px'}}
@@ -286,149 +380,180 @@ function BookingMain(){
                             {getMasterDataById(selectedBooking.fromlocation,'location')} 
                             &nbsp;-&nbsp;{getMasterDataById(selectedBooking.tolocation,'location')}
                         </h6>
-                        <form action="" onSubmit={e=> { e.preventDefault(); submitBooking();}}>
-                            {selectedBooking.via ? 
-                                <>
-                                    
-                                </> : 
-                                <>
-                                    <label className='' htmlFor="fromlocation" key='fromlocation' style={{float: 'left'}}>From: </label>
-                                    <select className='' name='fromlocation' id='fromlocation' value={newBookingForm.fromlocation} onChange={handleChange}>
-                                        <option value="" >Select a location</option>
-                                        <option 
-                                            key={selectedBooking.fromlocation} 
-                                            value={selectedBooking.fromlocation}
-                                            onChange={handleChange}
-                                        >
-                                            {getMasterDataById(selectedBooking.fromlocation,'location')}
-                                        </option>
-                                    </select>
-                                    <label className='' htmlFor="tolocation" key='tolocation' style={{float: 'left'}}>To :</label>
-                                    <select className='' name='tolocation' id='tolocation' value={newBookingForm.tolocation} onChange={handleChange}>
-                                        <option value="" >Select a location</option>
-                                        <option 
-                                            key={selectedBooking.tolocation} 
-                                            value={selectedBooking.tolocation} 
-                                            onChange={handleChange}
-                                        >
-                                            {getMasterDataById(selectedBooking.tolocation,'location')}
-                                        </option>
-                                    </select>
-                                </>
-                            }
-                            <span>
-                                <label className='' htmlFor="noofseats" key='noofseats' style={{float: 'left'}}>No of seats :</label>
-                                <input type="number" name="noofseats" id="noofseats" min="0" onChange={handleChange}/>
-                            </span>
-                            {newBookingForm.noofseats > 0 && 
-                                <div style={{width: '100% !important'}}>
-                                    {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel> */}
-                                    <Select
-                                        labelId="demo-multiple-checkbox-label"
-                                        id="demo-multiple-checkbox"
-                                        name="seats"
-                                        multiple
-                                        value={variantName}
-                                        onChange={handleChange}
-                                        input={<OutlinedInput label="Seats" />}
-                                        renderValue={(selected) => selected.map((x) => x.seatno).join(', ')}
-                                        MenuProps={MenuProps}
-                                    >
-                                    {BookingSeats && BookingSeats.map(seat => (
-                                        <MenuItem key={seat.seatno} value={seat}>
-                                            <Checkbox
-                                                checked={
-                                                    variantName.findIndex(item => item.seatno === seat.seatno) >= 0
-                                                }
-                                            />
-                                            <ListItemText primary={seat.seatno + " " + seat.type} />
-                                        </MenuItem>
-                                    ))}
-                                    </Select>
-                                </div>
-                            }
-                            {((newBookingForm.noofseats == variantName.length && newBookingForm.noofseats != 0 && variantName.length != 0)) && 
-                                <>
-                                    {newBookingForm.noofseats > 1 ? 
+                        { !isPaymentDone ? 
+                            <> 
+                                <form action="" onSubmit={e=> { e.preventDefault(); validateBookingForm();}}>
+                                    {selectedBooking.via ? 
                                         <>
-                                            {Array.from({ length: newBookingForm.noofseats }, (_, index) => index).map((item, index)=>{
-                                                return <>
-                                                    {variantName && variantName[index]?.seatno} Passeger details
-                                                    <input type="text" name={`passangers.name.${index}`} id="" placeholder='Enter name' onChange={handleChange}/>
-                                                    <input type="text" name={`passangers.age.${index}`} id="" placeholder='Enter age' onChange={handleChange}/>
-                                                    {/* <input type="text" name={`passangers.seatno.${index}`} disabled id="" value={variantName[index]?.seatno} onChange={handleChange}/> */}
-                                                </>
-                                            })}
+                                            
                                         </> : 
                                         <>
-                                            { newBookingForm.noofseats == 1 && 
-                                                <>
-                                                    {variantName && variantName[0]?.seatno} Passenger details
-                                                    <input type="text" name={`passangers.name.${0}`} id="" placeholder='Enter name' onChange={handleChange}/>
-                                                    <input type="text" name={`passangers.age.${0}`} id="" placeholder='Enter age' onChange={handleChange}/>
-                                                    {/* <input type="text" name={`passangers.seatno.${0}`} disabled id="" value={variantName[0]?.seatno} onChange={handleChange}/> */}
-                                                </>
-                                            }
+                                            <label className='' htmlFor="fromlocation" key='fromlocation' style={{float: 'left'}}>From: </label>
+                                            <select className='' name='fromlocation' id='fromlocation' value={newBookingForm.fromlocation} onChange={handleChange}>
+                                                <option value="" >Select a location</option>
+                                                <option 
+                                                    key={selectedBooking.fromlocation} 
+                                                    value={selectedBooking.fromlocation}
+                                                    onChange={handleChange}
+                                                >
+                                                    {getMasterDataById(selectedBooking.fromlocation,'location')}
+                                                </option>
+                                            </select>
+                                            <label className='' htmlFor="tolocation" key='tolocation' style={{float: 'left'}}>To :</label>
+                                            <select className='' name='tolocation' id='tolocation' value={newBookingForm.tolocation} onChange={handleChange}>
+                                                <option value="" >Select a location</option>
+                                                <option 
+                                                    key={selectedBooking.tolocation} 
+                                                    value={selectedBooking.tolocation} 
+                                                    onChange={handleChange}
+                                                >
+                                                    {getMasterDataById(selectedBooking.tolocation,'location')}
+                                                </option>
+                                            </select>
                                         </>
                                     }
-                                    <input type="phone" name={`mobile`} id="mobile" placeholder='Enter Mobile' onChange={handleChange}/>
-                                    <input type="mail" name={`mail`} id="" placeholder='Enter email' onChange={handleChange}/>
-                                    { variantName.length > 0 && 
-                                        <div style={{fontSize:'smaller'}}>
-                                            Amount for {variantName.length} tickets: {pricing?.amount}/- &nbsp;
-                                            CGST (10%) : {pricing?.cgst}/- &nbsp;
-                                            SGST (10%) : {pricing?.sgst}/- &nbsp;
-                                            Total : {pricing?.total}/- &nbsp;
+                                    <span>
+                                        <label className='' htmlFor="noofseats" key='noofseats' style={{float: 'left'}}>No of seats :</label>
+                                        <input type="number" name="noofseats" id="noofseats" min="0" onChange={handleChange}/>
+                                    </span>
+                                    {newBookingForm.noofseats > 0 && 
+                                        <div style={{width: '100% !important'}}>
+                                            {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel> */}
+                                            <Select
+                                                labelId="demo-multiple-checkbox-label"
+                                                id="demo-multiple-checkbox"
+                                                name="seats"
+                                                multiple
+                                                value={variantName}
+                                                onChange={handleChange}
+                                                input={<OutlinedInput label="Seats" />}
+                                                renderValue={(selected) => selected.map((x) => x.seatno).join(', ')}
+                                                MenuProps={MenuProps}
+                                            >
+                                            {BookingSeats && BookingSeats.map(seat => (
+                                                <MenuItem key={seat.seatno} value={seat}>
+                                                    <Checkbox
+                                                        checked={
+                                                            variantName.findIndex(item => item.seatno === seat.seatno) >= 0
+                                                        }
+                                                    />
+                                                    <ListItemText primary={seat.seatno + " " + seat.type} />
+                                                </MenuItem>
+                                            ))}
+                                            </Select>
                                         </div>
                                     }
-                                    <button type="submit">Book</button>
-                                </>
-                            }
-                            {/* <Card sx={{ 
-                                minWidth: 280, 
-                                border: "1px solid rgba(211,211,211,0.6)",
-                                // height: 50
-                            }}> 
-                                <CardHeader 
-                                    title="Passanger details"
-                                    action={ 
-                                        <IconButton 
-                                            onClick={() => setOpen(!open)} 
-                                            aria-label="expand"
-                                            size="small"
-                                        > 
-                                            {open ? <KeyboardArrowUpIcon /> 
-                                                : <KeyboardArrowDownIcon />} 
-                                        </IconButton> 
-                                    } 
-                                ></CardHeader> 
-                                <div style={{  
-                                    backgroundColor: "rgba(211,211,211,0.4)" 
-                                }}> 
-                                    <Collapse in={open} timeout="auto"
-                                        unmountOnExit> 
-                                        <CardContent> 
-                                            <Container sx={{  
-                                                height: 'auto',  
-                                                lineHeight: 2  
-                                            }}> 
-                                                An interview-centric course  
-                                                designed to prepare you for 
-                                                the role of SDE for both 
-                                                product and service-based  
-                                                companies. A placement  
-                                                preparation pack built with
-                                                years of expertise. Learn  
-                                                Resume Building, C++, Java,  
-                                                DSA, CS Theory concepts, 
-                                                Aptitude, Reasoning, LLD,  
-                                                and much more! 
-                                            </Container> 
-                                        </CardContent> 
-                                    </Collapse> 
-                                </div> 
-                            </Card>  */}
-                        </form>
+                                    {((newBookingForm.noofseats == variantName.length && newBookingForm.noofseats != 0 && variantName.length != 0)) && 
+                                        <>
+                                            {newBookingForm.noofseats > 1 ? 
+                                                <>
+                                                    {Array.from({ length: newBookingForm.noofseats }, (_, index) => index).map((item, index)=>{
+                                                        return <>
+                                                            {variantName && variantName[index]?.seatno} Passeger details
+                                                            <input type="text" name={`passangers.name.${index}`} id="" placeholder='Enter name' onChange={handleChange}/>
+                                                            <input type="text" name={`passangers.age.${index}`} id="" placeholder='Enter age' onChange={handleChange}/>
+                                                            {/* <input type="text" name={`passangers.seatno.${index}`} disabled id="" value={variantName[index]?.seatno} onChange={handleChange}/> */}
+                                                        </>
+                                                    })}
+                                                </> : 
+                                                <>
+                                                    { newBookingForm.noofseats == 1 && 
+                                                        <>
+                                                            {variantName && variantName[0]?.seatno} Passenger details
+                                                            <input type="text" name={`passangers.name.${0}`} id="" placeholder='Enter name' onChange={handleChange}/>
+                                                            <input type="text" name={`passangers.age.${0}`} id="" placeholder='Enter age' onChange={handleChange}/>
+                                                            {/* <input type="text" name={`passangers.seatno.${0}`} disabled id="" value={variantName[0]?.seatno} onChange={handleChange}/> */}
+                                                        </>
+                                                    }
+                                                </>
+                                            }
+                                            <input type="phone" name={`mobile`} id="mobile" placeholder='Enter Mobile' onChange={handleChange}/>
+                                            <input type="mail" name={`mail`} id="" placeholder='Enter email' onChange={handleChange}/>
+                                            { variantName.length > 0 && 
+                                                <div style={{fontSize:'smaller'}}>
+                                                    Amount for {variantName.length} tickets: {pricing?.amount}/- &nbsp;
+                                                    CGST (10%) : {pricing?.cgst}/- &nbsp;
+                                                    SGST (10%) : {pricing?.sgst}/- &nbsp;
+                                                    Total : {pricing?.total}/- &nbsp;
+                                                </div>
+                                            }
+                                            <button type="submit">Pay {pricing?.total}/-</button>
+                                        </>
+                                    }
+                                </form>
+                            </> : 
+                            <> 
+                                <div>{ newBookingForm.seats && newBookingForm.seats.map(seat=>{
+                                    return <span>Selected seats : {seat.seatno}</span>
+                                    })}
+                                </div>
+                                <div> Total amount : {pricing.total}/-</div>
+                                <div> {/* Creditcard */}
+                                    <div className="cardetails-wrapper">
+                                        <div className="cardetails-payment">
+                                            <h2 className="carddetails-head">Card Details</h2>
+
+                                            <div className="cardetails-form">
+                                                <div className="cardetails-card cardetails-space cardetails-icon-relative">
+                                                <label className="cardetails-label">Card Number:</label>
+                                                <input
+                                                    type="text"
+                                                    className="cardetails-input"
+                                                    data-mask="0000 0000 0000 0000"
+                                                    placeholder="XXXX-XXXX-XXXX-XXXX"
+                                                    value={cc_format(card.cardno)}
+                                                    onChange={onCardDetailsChange}
+                                                    onKeyPress={(event) => {
+                                                    if (!/[0-9]/.test(event.key)) {
+                                                        event.preventDefault();
+                                                    }
+                                                    }}
+                                                />
+                                                <i className={card.cardtype} id="cardtype" style={{paddingRight:'2px'}}></i>
+                                                </div>
+                                                <div className="cardetails-card-grp cardetails-space">
+                                                <div className="cardetails-card-item cardetails-icon-relative">
+                                                    <label className="cardetails-label">Expiry date:</label>
+                                                    <input
+                                                    type="text"
+                                                    name="expiry-data"
+                                                    className="cardetails-input"
+                                                    placeholder="mm / yy"
+                                                    onChange={onChangeExp}
+                                                    value={expriy_format(card.expirydt)}
+                                                    />
+                                                    <i className="far fa-calendar-alt" style={{paddingRight:'5px'}}></i>
+                                                </div>
+                                                <div className="cardetails-card-item cardetails-icon-relative">
+                                                    <label className="cardetails-label">Cvv:</label>
+                                                    <input
+                                                    type="password"
+                                                    className="cardetails-input"
+                                                    data-mask="000"
+                                                    placeholder="000"
+                                                    maxLength="3"
+                                                    pattern="[0-9][0-9][0-9]"
+                                                    onKeyPress={(event) => {
+                                                        if (!/[0-9]/.test(event.key)) {
+                                                        event.preventDefault();
+                                                        }
+                                                    }}
+                                                    />
+                                                    <i className="fas fa-lock"></i>
+                                                </div>
+                                                </div>
+                                                <div className="cardetails-card cardetails-space cardetails-icon-relative">
+                                                <label className="cardetails-label">Name on Card:</label>
+                                                <input type="text" className="cardetails-input" placeholder="" />
+                                                <i className="fas fa-user"></i>
+                                                </div>
+                                                <div className="cardetails-btn" onClick={validateCardDetails}>Pay</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        }
                     </>
                 }
             </span>
