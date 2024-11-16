@@ -8,6 +8,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import InputLabel from '@mui/material/InputLabel';
 import BookingSeats from '../Enums/BookingSeats';
+import Collapse from "@mui/material/Collapse"; 
+import CardHeader from "@mui/material/CardHeader"; 
+import Container from "@mui/material/Container";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"; 
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 const menuData = [
     {
@@ -58,9 +63,13 @@ function BookingMain(){
         fromlocation : '',
         tolocation : '',
         noofseats : '',
-        passangers : []
+        passangers : [],
+        pricing : {}
     });
     const [variantName, setVariantName] = React.useState([]);
+    const [pricing, setPricing] = useState({});
+
+    const [open, setOpen] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect( ()=>{
@@ -155,8 +164,6 @@ function BookingMain(){
                 (item) => variantName.findIndex((o) => o.seatno === item.seatno) >= 0
             );
             console.log("filterdValue", filterdValue);
-            value.bookedby = user.id;
-            value.bookedat = new Date();
             let duplicateRemoved = [];
 
             value.forEach((item) => {
@@ -169,6 +176,15 @@ function BookingMain(){
             console.log(duplicateRemoved);
             setVariantName(duplicateRemoved);
             value = duplicateRemoved;
+            let price = duplicateRemoved.reduce((acc,curr)=> acc + curr.price , 0);
+            setPricing(
+                { 
+                    amount : price,
+                    cgst : ((price/100)*10),
+                    sgst : ((price/100)*10),
+                    total : (price + ((price/100)*10) * 2)
+                }
+            )
         }
         // need to remove the object if no of seats count got decreased
         setNewBookingForm((prev)=>({
@@ -178,7 +194,48 @@ function BookingMain(){
     }
 
     const submitBooking = async () => {
-        console.log(newBookingForm);
+        for(let index in variantName){
+            newBookingForm.passangers[index]['seatno'] = variantName[index]['seatno'];
+            variantName[index]['bookedby'] = user.id;
+            variantName[index]['bookedat'] = new Date();
+            newBookingForm.seats[index]['passengers'] = newBookingForm.passangers[index];
+        }
+        newBookingForm.pricing = pricing;
+        newBookingForm['transportid'] = selectedBooking.id;
+        for(let item of newBookingForm.seats){
+            selectedBooking.seats[selectedBooking.seats.findIndex((ele)=>{return ele.seatno == item.seatno})] = item;
+        }
+        console.log(selectedBooking, newBookingForm);
+        await updateTransportData(newBookingForm['transportid'], selectedBooking);
+        await saveBookingData(newBookingForm);
+    }
+
+    const updateTransportData = async (transportid, data) => {
+        // Define the request options
+        const requestOptions = {
+            method: "PUT", // Specify the request method
+            headers: { "Content-Type": "application/json" }, // Specify the content type
+            body: JSON.stringify(data) // Send the data in JSON format
+        };
+
+        fetch(`${DBJSON_URL}/transport/${transportid}`, requestOptions)
+        .then(response => response.json()) // Parse the response as JSON
+        .then(data => console.log(data)) // Do something with the data
+        .catch(error => console.error(error)); // Handle errors
+    }
+
+    const saveBookingData = async (body) => {
+        const req = await fetch(`${DBJSON_URL}/bookings`,{
+            method:'POST',
+            headers:{
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(body)
+        }).then(()=>{
+            console.log("Booked")
+        }).catch(error=>{
+            console.log("Error while booking")
+        })
     }
 
     const drawer = (
@@ -265,7 +322,7 @@ function BookingMain(){
                             </span>
                             {newBookingForm.noofseats > 0 && 
                                 <div style={{width: '100% !important'}}>
-                                    <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+                                    {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel> */}
                                     <Select
                                         labelId="demo-multiple-checkbox-label"
                                         id="demo-multiple-checkbox"
@@ -273,7 +330,7 @@ function BookingMain(){
                                         multiple
                                         value={variantName}
                                         onChange={handleChange}
-                                        input={<OutlinedInput label="Tag" />}
+                                        input={<OutlinedInput label="Seats" />}
                                         renderValue={(selected) => selected.map((x) => x.seatno).join(', ')}
                                         MenuProps={MenuProps}
                                     >
@@ -296,29 +353,81 @@ function BookingMain(){
                                         <>
                                             {Array.from({ length: newBookingForm.noofseats }, (_, index) => index).map((item, index)=>{
                                                 return <>
-                                                    {variantName && variantName[index]?.seatno} Passeger details {index + 1}
+                                                    {variantName && variantName[index]?.seatno} Passeger details
                                                     <input type="text" name={`passangers.name.${index}`} id="" placeholder='Enter name' onChange={handleChange}/>
                                                     <input type="text" name={`passangers.age.${index}`} id="" placeholder='Enter age' onChange={handleChange}/>
-                                                    <input type="text" name={`passangers.seatno.${index}`} disabled id="" value={variantName[index]?.seatno} onChange={handleChange}/>
+                                                    {/* <input type="text" name={`passangers.seatno.${index}`} disabled id="" value={variantName[index]?.seatno} onChange={handleChange}/> */}
                                                 </>
                                             })}
                                         </> : 
                                         <>
-                                            {newBookingForm.noofseats == 1 && 
+                                            { newBookingForm.noofseats == 1 && 
                                                 <>
                                                     {variantName && variantName[0]?.seatno} Passenger details
                                                     <input type="text" name={`passangers.name.${0}`} id="" placeholder='Enter name' onChange={handleChange}/>
                                                     <input type="text" name={`passangers.age.${0}`} id="" placeholder='Enter age' onChange={handleChange}/>
-                                                    <input type="text" name={`passangers.seatno.${0}`} disabled id="" value={variantName[0]?.seatno} onChange={handleChange}/>
+                                                    {/* <input type="text" name={`passangers.seatno.${0}`} disabled id="" value={variantName[0]?.seatno} onChange={handleChange}/> */}
                                                 </>
                                             }
                                         </>
                                     }
                                     <input type="phone" name={`mobile`} id="mobile" placeholder='Enter Mobile' onChange={handleChange}/>
                                     <input type="mail" name={`mail`} id="" placeholder='Enter email' onChange={handleChange}/>
+                                    { variantName.length > 0 && 
+                                        <div style={{fontSize:'smaller'}}>
+                                            Amount for {variantName.length} tickets: {pricing?.amount}/- &nbsp;
+                                            CGST (10%) : {pricing?.cgst}/- &nbsp;
+                                            SGST (10%) : {pricing?.sgst}/- &nbsp;
+                                            Total : {pricing?.total}/- &nbsp;
+                                        </div>
+                                    }
                                     <button type="submit">Book</button>
                                 </>
                             }
+                            {/* <Card sx={{ 
+                                minWidth: 280, 
+                                border: "1px solid rgba(211,211,211,0.6)",
+                                // height: 50
+                            }}> 
+                                <CardHeader 
+                                    title="Passanger details"
+                                    action={ 
+                                        <IconButton 
+                                            onClick={() => setOpen(!open)} 
+                                            aria-label="expand"
+                                            size="small"
+                                        > 
+                                            {open ? <KeyboardArrowUpIcon /> 
+                                                : <KeyboardArrowDownIcon />} 
+                                        </IconButton> 
+                                    } 
+                                ></CardHeader> 
+                                <div style={{  
+                                    backgroundColor: "rgba(211,211,211,0.4)" 
+                                }}> 
+                                    <Collapse in={open} timeout="auto"
+                                        unmountOnExit> 
+                                        <CardContent> 
+                                            <Container sx={{  
+                                                height: 'auto',  
+                                                lineHeight: 2  
+                                            }}> 
+                                                An interview-centric course  
+                                                designed to prepare you for 
+                                                the role of SDE for both 
+                                                product and service-based  
+                                                companies. A placement  
+                                                preparation pack built with
+                                                years of expertise. Learn  
+                                                Resume Building, C++, Java,  
+                                                DSA, CS Theory concepts, 
+                                                Aptitude, Reasoning, LLD,  
+                                                and much more! 
+                                            </Container> 
+                                        </CardContent> 
+                                    </Collapse> 
+                                </div> 
+                            </Card>  */}
                         </form>
                     </>
                 }
